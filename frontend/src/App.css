@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@font-face {
+  font-family: 'Nunito Sans';
+  src: url('https://fonts.googleapis.com/css?family=Open+Sans');
+}
+
+html,
+body {
+  overflow: auto;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  min-height: 100%;
+  overflow-x: hidden;
+  font-family: 'Open Sans';
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+.centerImg {
+  margin-top: 12%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  max-width: 100%;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-moz-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-o-keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pad-x {
+  padding-right: 0px;
+  padding-left: 0px;
+}
+#map {
+  background-color: black !important;
+}
+#map_canvas {
+  height: 400px;
+  width: 500px;
+}
+#myCanvas {
+  background-color: black;
+  height: 100px;
+  width: 100px;
+}
+.content {
+  margin-top: -50px;
+}
+
+.main-image-template {
+  background-position: center center;
+  background-size: cover;
+  overflow: auto;
+  width: 100%;
+  animation: fadein 0.7s;
+  -moz-animation: fadein 0.7s;
+  -webkit-animation: fadein 0.7s;
+  -o-animation: fadein 0.7s;
+}
+
+.booked-runs {
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)),
+    url('./img/profile2.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+  overflow: auto;
+  position: fixed;
+  width: 100%;
+  animation: fadein 0.7s;
+  -moz-animation: fadein 0.7s; /* Firefox */
+  -webkit-animation: fadein 0.7s; /* Safari and Chrome */
+  -o-animation: fadein 0.7s; /* Opera */
+}
+
+.cn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+}
+.mt-150 {
+  margin-top: 150px;
+}
+.mt-100 {
+  margin-top: 100px;
+}
+.mb-50 {
+  margin-bottom: 50px;
+}
+
+.light-overlay {
+  background-color: rgba(15, 15, 15, 0.425);
+  min-height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  width: 100%;
+  height: auto;
+}
+
+tr:nth-child(n + 4):nth-child(-n + 7) > th:nth-child(n + 5):nth-child(-n + 6),
+tr:nth-child(n + 5):nth-child(-n + 7) > th:nth-child(n + 4):nth-child(-n + 7),
+tr:nth-child(n + 6):nth-child(-n + 7) > th:nth-child(n + 3):nth-child(-n + 8),
+tr:nth-child(n + 7):nth-child(-n + 7) > th:nth-child(n + 2):nth-child(-n + 9) {
+  background-color: #3d6bce;
+}
+.Math-sqrt {
+  display: inline;
+}
+.Math-sqrt::after {
+  content: '\221A';
+}
+.Math-sqrt:hover {
+  visibility: hidden;
+}
+
+.fontSize {
+  font-size: 40px;
+}

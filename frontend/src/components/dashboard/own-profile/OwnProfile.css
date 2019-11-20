@@ -1,0 +1,21 @@
+.dashboard {
+  margin-top: 50px;
+  width: 100%;
+}
+.dashboard-image {
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)),
+    url('../../../img/profile-main.jpg');
+}
+.mb-0 {
+  margin-bottom: 0px;
+}
+@media screen and (max-width: 767px) {
+  .dashboard-image {
+    height: 290px !important;
+  }
+}
+
+.card-body {
+  max-height: 200px;
+  min-height: 130px;
+}
