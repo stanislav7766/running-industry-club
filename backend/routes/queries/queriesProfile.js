@@ -7,7 +7,7 @@ const validateProfile = require('../../validation/validateProfile');
 const validateRun = require('../../validation/validateRun');
 const validateBookedRun = require('../../validation/validateBookedRun');
 const { nofeedback, noprofile, nouser } = require('../../constants/constants');
-const { calculatedTotals } = require('./totalsActivities');
+const { calculatedTotals, calcPace } = require('./totalsActivities');
 const getCurrentProfile = async (req, res) => {
   try {
     const profile = await Profile.findOne({ 'user.id': req.user.id });
@@ -85,6 +85,7 @@ const setRun = async (req, res) => {
     locationRun: req.body.locationRun,
     distance: req.body.distance,
     time: req.body.time,
+    pace: calcPace(req.body.distance, req.body.time),
     feedback: req.body.feedback
   };
   try {
