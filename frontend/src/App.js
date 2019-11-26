@@ -16,6 +16,7 @@ import OwnProfile from './components/dashboard/own-profile/';
 import EditProfile from './components/dashboard/edit-profile/';
 import CreateProfile from './components/dashboard/create-profile/';
 import AddRun from './components/dashboard/happened-runs/add-run/';
+import AllRuns from './components/dashboard/happened-runs/all-runs/';
 import Feedbacks from './components/feedbacks/Feedbacks';
 import { setCurrentUser, logoutUser } from './actions/authActions';
 import BookedRuns from './components/dashboard/booked-runs/BookedRuns';
@@ -49,6 +50,9 @@ const App = () => (
           </Switch>
           <Switch>
             <PrivateRoute exact path="/booked-runs" component={BookedRuns} />
+          </Switch>
+          <Switch>
+            <PrivateRoute exact path="/all-runs" component={AllRuns} />
           </Switch>
           <Switch>
             <PrivateRoute

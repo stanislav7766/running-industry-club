@@ -137,6 +137,20 @@ img {
   height: auto;
 }
 
+.card-template {
+  overflow: hidden;
+  color: black;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+  padding: 0;
+  margin: 20px auto;
+  transition: all 0.25s ease-in-out;
+}
+
 tr:nth-child(n + 4):nth-child(-n + 7) > th:nth-child(n + 5):nth-child(-n + 6),
 tr:nth-child(n + 5):nth-child(-n + 7) > th:nth-child(n + 4):nth-child(-n + 7),
 tr:nth-child(n + 6):nth-child(-n + 7) > th:nth-child(n + 3):nth-child(-n + 8),
@@ -155,4 +169,37 @@ tr:nth-child(n + 7):nth-child(-n + 7) > th:nth-child(n + 2):nth-child(-n + 9) {
 
 .fontSize {
   font-size: 40px;
+}
+
+.widthCard {
+  width: 20rem;
+}
+
+@media screen and (max-width: 575) {
+  .widthCard {
+    width: 25rem;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .widthCard {
+    width: 15rem;
+  }
+}
+@media screen and (min-width: 768px) {
+  .widthCard {
+    width: 18rem;
+  }
+}
+
+@media screen and (min-width: 991px) {
+  .widthCard {
+    width: 14rem;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .widthCard {
+    width: 18rem;
+  }
 }

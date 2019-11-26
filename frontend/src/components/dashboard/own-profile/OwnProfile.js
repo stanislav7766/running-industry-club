@@ -19,6 +19,7 @@ import Runs from '../happened-runs/runs';
 import Spinner from '../../common/Spinner';
 import './OwnProfile.css';
 import logoFull from '../../../img/logo-full.png';
+import preparePace from '../../common/preparePace';
 const OwnProfile = props => {
   const [heightPCardBody, setHightPCardBody] = useState(0);
   const refPCardBody = useRef();
@@ -48,10 +49,7 @@ const OwnProfile = props => {
     props.deleteAccount();
     props.history.push('/');
   };
-  const prepareAvgPace = str => {
-    const splittedPace = str.split(':');
-    return `${splittedPace[0]}'${splittedPace[1]}"`;
-  };
+
   const bioContent = isExistProfile ? (
     <Spinner />
   ) : Object.keys(profile).length > 0 ? (
@@ -119,15 +117,18 @@ const OwnProfile = props => {
         <Col xs={4}>
           <p className="font-weight-bolder text-center mb-0">
             {profile.runs.length > 0
-              ? prepareAvgPace(profile.totalsRun.avgPace)
+              ? preparePace(profile.totalsRun.avgPace)
               : 0}
           </p>{' '}
           <p className="text-center">Avg. Pace</p>
         </Col>
         <Col xs={12}>
-          <button className="btn btn-outline-secondary btn-block mb-4 mt-4">
+          <Link
+            to="/all-runs"
+            className="btn btn-outline-secondary btn-block mb-4 mt-4"
+          >
             Перейти к истории пробежок
-          </button>
+          </Link>
         </Col>
       </Row>
     </Fragment>

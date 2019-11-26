@@ -6,7 +6,7 @@ import './LandingCard.css';
 const LandingCard = ({ cardImage, cardBody, cardTitle, cardLink }) => {
   return (
     <Fragment>
-      <Col xs={12} sm={6} md={6} lg={3} xl={3} className="LandingCard">
+      <Col xs={12} sm={6} md={6} lg={3} xl={3} className="card-template">
         <Card className="widthCard">
           {cardLink[0] === '/' ? (
             <Link className="no-style-link" to={cardLink}>

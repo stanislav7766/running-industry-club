@@ -1,4 +1,4 @@
-.LandingCard {
+/* .LandingCard {
   overflow: hidden;
   color: black;
   cursor: pointer;
@@ -10,12 +10,12 @@
   padding: 0;
   margin: 20px auto;
   transition: all 0.25s ease-in-out;
-}
+} */
 .card-body {
   max-height: 130px;
   min-height: 130px;
 }
-.widthCard {
+/* .widthCard {
   width: 20rem;
 }
 
@@ -46,7 +46,7 @@
   .widthCard {
     width: 18rem;
   }
-}
+} */
 .card-text,
 .card-title {
   text-decoration: none;

@@ -90,6 +90,7 @@ const AddRun = props => {
             <TextFieldGroup
               placeholder="Укажите дату забега"
               name="date"
+              info="mm.dd.yyyy"
               value={inputs.date}
               onChange={onChange}
               error={errors.date}
