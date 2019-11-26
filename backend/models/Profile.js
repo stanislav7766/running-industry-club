@@ -100,6 +100,10 @@ const ProfileSchema = new Schema({
         type: String,
         required: true
       },
+      pace: {
+        type: String,
+        required: true
+      },
       feedback: {
         type: String
       }
