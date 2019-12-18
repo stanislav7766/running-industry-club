@@ -27,6 +27,7 @@ router.get(
 router.post(
   '/runs',
   passport.authenticate('jwt', jwtConfig),
+  queriesProfile.parseImageUpload(),
   queriesProfile.setRun
 );
 

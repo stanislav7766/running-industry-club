@@ -8,6 +8,7 @@ const feedbacks = require('./routes/api/feedbacks');
 const profiles = require('./routes/api/profiles');
 const passport = require('passport');
 const app = express();
+require('dotenv').config();
 
 const db = require('./config/keys').mongoURI;
 const opt = {

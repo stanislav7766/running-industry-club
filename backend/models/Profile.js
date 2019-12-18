@@ -106,6 +106,14 @@ const ProfileSchema = new Schema({
       },
       feedback: {
         type: String
+      },
+      runPreview: {
+        url: {
+          type: String
+        },
+        public_id: {
+          type: String
+        }
       }
     }
   ],
