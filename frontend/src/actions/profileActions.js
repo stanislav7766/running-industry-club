@@ -86,9 +86,22 @@ export const setError = () => ({
   payload: {}
 });
 
-export const addRun = (runData, history) => async dispatch => {
+export const addRun = (
+  runData,
+  history,
+  previewFile = null
+) => async dispatch => {
+  const bodyFormData = new FormData();
+  Object.keys(runData).forEach(prop => bodyFormData.set(prop, runData[prop]));
+  previewFile && bodyFormData.append('preview', previewFile);
+
   try {
-    await axios.post('/api/profile/runs', runData);
+    await axios({
+      method: 'post',
+      url: '/api/profile/runs',
+      data: bodyFormData,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
     history.push('/own-profile');
   } catch (err) {
     dispatch({
