@@ -7,13 +7,13 @@ import {
 import dotenv from 'dotenv';
 import dataURItoBlob from '../../../common/dataURLtoBlob';
 dotenv.config();
-//todo dotenv not working
+
 const coordsKyiv = { lat: 50.45466, lng: 30.5238 };
 const libs = ['places', 'visualization', 'drawing', 'geometry'];
 
 const MapAddRun = props => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.GOOGLE_MAP_URL,
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_URL,
     libraries: libs
   });
   const [offset, setoffset] = useState(0);
