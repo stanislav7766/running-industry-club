@@ -87,6 +87,7 @@ const OwnProfile = props => {
       </Link>
     </Fragment>
   );
+
   const totalsContent = isExistProfile ? (
     <Spinner />
   ) : Object.keys(profile).length > 0 ? (
@@ -123,12 +124,24 @@ const OwnProfile = props => {
           <p className="text-center">Avg. Pace</p>
         </Col>
         <Col xs={12}>
-          <Link
-            to="/all-runs"
-            className="btn btn-outline-secondary btn-block mb-4 mt-4"
-          >
-            Перейти к истории пробежок
-          </Link>
+          {profile.runs.length > 0 ? (
+            <Link
+              to="/all-runs"
+              className="btn btn-outline-secondary btn-block mb-4 mt-4"
+            >
+              Перейти к истории пробежок
+            </Link>
+          ) : (
+            <Link
+              style={{
+                pointerEvents: 'none'
+              }}
+              to="#"
+              className="btn btn-outline-secondary btn-block mb-4 mt-4"
+            >
+              У вас нет пробежек
+            </Link>
+          )}
         </Col>
       </Row>
     </Fragment>
