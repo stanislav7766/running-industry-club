@@ -18,11 +18,15 @@ const AddRun = props => {
     time: '',
     feedback: ''
   });
+  const [previewFile, setPreviewFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [coordsRun, setCoordsRun] = useState([]);
 
   const handleSetCoords = arr => {
     setCoordsRun(arr);
+  };
+  const handleSetPreview = file => {
+    setPreviewFile(file);
   };
   const handleSetDistance = val => {
     setInputs({ ...inputs, distance: val });
@@ -44,7 +48,7 @@ const AddRun = props => {
       time: inputs.time,
       feedback: inputs.feedback
     };
-    props.addRun(runData, props.history);
+    props.addRun(runData, props.history, previewFile && previewFile);
   };
   const onChange = e =>
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -54,6 +58,7 @@ const AddRun = props => {
         <MapAddRun
           errors={errors}
           handleSetCoords={handleSetCoords}
+          handleSetPreview={handleSetPreview}
           handleSetDistance={handleSetDistance}
         />
       </Col>

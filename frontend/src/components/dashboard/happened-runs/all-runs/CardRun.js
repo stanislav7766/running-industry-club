@@ -1,12 +1,15 @@
 import React, { Fragment } from 'react';
 import { Card, Col } from 'react-bootstrap';
-import tempPreviewCard from '../../../../img/temp_preview-card.jpg';
+import tempPreviewCard from '../../../../img/preview-card.jpg';
 import preparePace from '../../../common/preparePace';
 const CardRun = ({ run }) => (
   <Fragment>
     <Col xs={12} sm={6} md={6} lg={3} xl={3} className="card-template">
       <Card className="widthCard">
-        <Card.Img variant="top" src={tempPreviewCard} />
+        <Card.Img
+          variant="top"
+          src={run.runPreview ? run.runPreview.url : tempPreviewCard}
+        />
         <Card.Body>
           <Card.Title>{run.nameRun}</Card.Title>
           <Card.Text>

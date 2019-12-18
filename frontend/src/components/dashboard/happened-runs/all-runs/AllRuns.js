@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getCurrentProfile } from '../../../../actions/profileActions';
 import Spinner from '../../../common/Spinner';
 import './AllRuns.css';
@@ -33,6 +34,14 @@ const AllRuns = props => {
     <div id="all-runs">
       <Container fluid={true}>
         <Row style={{ textAlign: 'center' }}>
+          <Col>
+            <Link
+              to="/own-profile"
+              className="btn btn-block btn-secondary mb-3 w-25 mx-auto"
+            >
+              Вернуться
+            </Link>
+          </Col>
           {useMemo(
             () => (
               <Col xs={12}>{RunsContent}</Col>
