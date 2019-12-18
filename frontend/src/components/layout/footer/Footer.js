@@ -6,7 +6,7 @@ const Footer = () => (
   <Row>
     <Col xs={12}>
       <footer className="FooterBlock">
-        Copyright &copy; {new Date().getFullYear()} Running Industry
+        Copyright &copy; {new Date().getFullYear()} Running Industry Club
       </footer>
     </Col>
   </Row>
