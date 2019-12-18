@@ -40,7 +40,6 @@ const App = () => (
       <Fragment>
         <Header />
         <Fragment>
-          {/* <div className="cwontent"> */}
           <Route exact path="/" component={Landing} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/login" component={Login} />
@@ -68,7 +67,6 @@ const App = () => (
             <PrivateRoute exact path="/own-profile" component={OwnProfile} />
           </Switch>
         </Fragment>
-        {/* </div> */}
         <Footer />
       </Fragment>
     </Router>

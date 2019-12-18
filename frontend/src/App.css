@@ -136,6 +136,10 @@ img {
   width: 100%;
   height: auto;
 }
+#canvas {
+  width: 10px;
+  height: 10px;
+}
 
 .card-template {
   overflow: hidden;

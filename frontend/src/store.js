@@ -17,12 +17,7 @@ const devTools =
 const store = createStore(
   rootReducer,
   initialState,
-  isMobileDevice()
-    ? compose(applyThunk)
-    : compose(
-        applyThunk,
-        devTools
-      )
+  isMobileDevice() ? compose(applyThunk) : compose(applyThunk, devTools)
 );
 
 export default store;
