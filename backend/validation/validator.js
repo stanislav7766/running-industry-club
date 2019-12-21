@@ -29,6 +29,7 @@ const isURL = url =>
   /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/.test(
     url
   );
+const isInstanceError = obj => obj instanceof Error;
 module.exports = {
   isEmail,
   isEmpty,
@@ -36,5 +37,6 @@ module.exports = {
   isLength,
   isNumber,
   isTime,
-  isURL
+  isURL,
+  isInstanceError
 };

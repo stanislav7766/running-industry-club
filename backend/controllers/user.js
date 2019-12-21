@@ -1,6 +1,6 @@
 'use strict';
-const { isEmpty } = require('../validation/validator');
-const { errorHandler } = require('../middlewares/errorHandler');
+const { isEmpty, isInstanceError } = require('../validation/validator');
+const { errorHandler } = require('../middlewares');
 
 function UserController(userService) {
   this.userService = userService;
@@ -14,7 +14,7 @@ UserController.prototype.registerUser = async function(req, res, next) {
   if (isEmpty(userExist)) {
     try {
       const user = await this.userService.createUser(req.body);
-      user instanceof Error
+      isInstanceError(user)
         ? errorHandler(user, req, res)
         : res.status(200).end();
     } catch (error) {

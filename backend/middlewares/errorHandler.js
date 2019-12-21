@@ -1,18 +1,13 @@
 'use strict';
-const logger = require('./logger');
+const logger = require('../tools/logger');
 
 const errorHandler = (err, req, res) => {
-  logger.useLogger('error', err);
+  const myErr = createError(err);
+  logger.useLogger('error', myErr);
   res.status(500).end();
 };
 
-const createError = err => {
-  const myError = new Error();
-  myError.msg = err.errmsg;
-  myError.name = err.name;
-  return myError;
-};
-module.exports = {
-  errorHandler,
-  createError
-};
+const createError = err =>
+  Object.assign(new Error(), { msg: err.errmsg, name: err.name });
+
+module.exports = errorHandler;
