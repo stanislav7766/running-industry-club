@@ -1,6 +1,7 @@
 'use strict';
-const user = require('../validation-new/user');
-const { isEmpty } = require('../validation-new/validator');
+const user = require('../validation/user');
+const { createError } = require('../middlewares/errorHandler');
+const { isEmpty } = require('../validation/validator');
 const obj = require('../crypto');
 
 function UserService(userModel) {
@@ -19,11 +20,12 @@ UserService.prototype.checkUser = async function({
     password2
   });
   if (!isValid) return errors;
+
   const foundUser = await this.userModel.findUser({
     nickname,
     email
   });
-  return isEmpty(foundUser)
+  return !isEmpty(foundUser)
     ? {}
     : user.checkUser(foundUser[0], {
         nickname,
@@ -36,11 +38,18 @@ UserService.prototype.createUser = async function({
   password
 }) {
   const hashedPassword = await obj.hashPassword(password);
-  const user = await this.userModel.createUser({
-    nickname,
-    email,
-    password: hashedPassword
-  });
-  return user;
+  try {
+    const user = await this.userModel.createUser({
+      nickname,
+      email,
+      password: hashedPassword
+    });
+
+    return user;
+  } catch (error) {
+    console.log(error);
+
+    return createError(error);
+  }
 };
 module.exports = UserService;

@@ -1,5 +1,6 @@
 'use strict';
-const { isEmpty } = require('../validation-new/validator');
+const { isEmpty } = require('../validation/validator');
+const { errorHandler } = require('../middlewares/errorHandler');
 
 function UserController(userService) {
   this.userService = userService;
@@ -8,19 +9,21 @@ function UserController(userService) {
 }
 UserController.prototype.loginUser = async function(req, res, next) {};
 UserController.prototype.registerUser = async function(req, res, next) {
-  try {
-    const userExist = await this.userService.checkUser(req.body);
+  const userExist = await this.userService.checkUser(req.body);
 
-    if (isEmpty(userExist)) {
+  if (isEmpty(userExist)) {
+    try {
       const user = await this.userService.createUser(req.body);
-      user ? res.status(200).end() : res.status(400).end();
-    } else
-      res
-        .status(400)
-        .json(userExist)
-        .end();
-  } catch (error) {
-    next(error);
-  }
+      user instanceof Error
+        ? errorHandler(user, req, res)
+        : res.status(200).end();
+    } catch (error) {
+      errorHandler(error, req, res);
+    }
+  } else
+    res
+      .status(400)
+      .json(userExist)
+      .end();
 };
 module.exports = UserController;
