@@ -23,8 +23,11 @@ const userSchema = new Schema({
   }
 });
 
-userSchema.statics.findUser = async function({ nickname, email }) {
+userSchema.statics.findUsers = async function({ nickname, email }) {
   return await this.find({ $or: [{ nickname }, { email }] });
+};
+userSchema.statics.findOneUser = async function({ email }) {
+  return await this.findOne({ email });
 };
 userSchema.statics.createUser = async function(user) {
   return await new this(user).save();

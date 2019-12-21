@@ -10,6 +10,17 @@ const checkUser = (user, { nickname, email }) => {
     errors.email = 'Данная почта уже зарегистрирована';
   return errors;
 };
+
+const validateLogin = ({ email, password }) => {
+  const errors = {};
+  if (!validator.isEmail(email)) errors.email = 'Введите правильную почту';
+  if (validator.isEmpty(password)) errors.password = REQUIRED_FIELD;
+  return {
+    errors,
+    isValid: validator.isEmpty(errors)
+  };
+};
+
 const validateRegister = ({ email, password, password2, nickname }) => {
   const errors = {};
   if (validator.isEmpty(password)) errors.password = REQUIRED_FIELD;
@@ -33,5 +44,6 @@ const validateRegister = ({ email, password, password2, nickname }) => {
 
 module.exports = {
   checkUser,
-  validateRegister
+  validateRegister,
+  validateLogin
 };
