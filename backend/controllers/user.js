@@ -11,11 +11,21 @@ UserController.prototype.loginUser = async function(req, res, next) {
   const { errors, user } = await this.userService.checkUserLogin(req.body);
   if (isEmpty(errors)) {
     try {
-      const token = await this.userService.setToken(user);
-      res
-        .status(200)
-        .json(token)
-        .end();
+      const result = await this.userService.comparePasswords(
+        req.body,
+        user.password
+      );
+      if (isEmpty(result.errors)) {
+        const token = await this.userService.setToken(user);
+        res
+          .status(200)
+          .json(token)
+          .end();
+      } else
+        res
+          .status(400)
+          .json(result.errors)
+          .end();
     } catch (error) {
       errorHandler(error, req, res);
     }

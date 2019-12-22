@@ -1,7 +1,7 @@
 {
-  "name": "lab1-2",
+  "name": "backend-ric",
   "version": "1.0.0",
-  "description": "backend for the Web's labs",
+  "description": "backend side for the Running Industry Club",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -12,7 +12,7 @@
   "author": "stanislav7766",
   "license": "MIT",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcrypt": "^3.0.7",
     "body-parser": "^1.18.3",
     "cloudinary": "^1.17.0",
     "dotenv": "^8.2.0",

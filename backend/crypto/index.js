@@ -1,31 +1,35 @@
 'use strict';
 
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { secretOrKey } = require('../config/keys');
 require('dotenv').config();
-//todo: replace bcryptjs to bcrypt
+const { secretOrKey } = require('../config/keys');
+
 const hashedPass = password =>
   new Promise((resolve, reject) =>
-    bcrypt.genSalt(Number(process.env.SALT), (err, salt) => {
-      if (err) {
+    bcrypt
+      .genSalt(Number(process.env.SALT))
+      .then(salt =>
+        bcrypt
+          .hash(password, salt)
+          .then(hash => resolve(hash))
+          .catch(err => reject(err))
+      )
+      .catch(err => {
         err.name = hashedPass.name;
         reject(err);
-      }
-      bcrypt.hash(password, salt, (err, hash) =>
-        err ? reject(err) : resolve(hash)
-      );
-    })
+      })
   );
 
 const comparePass = (password, hash) =>
   new Promise((resolve, reject) =>
-    bcrypt.compare(password, hash).then(isMatched =>
-      resolve(isMatched).catch(err => {
+    bcrypt
+      .compare(password, hash)
+      .then(isMatched => resolve(isMatched))
+      .catch(err => {
         err.name = comparePass.name;
         reject(err);
       })
-    )
   );
 const jwtSign = ({ id, nickname, email }) =>
   new Promise((resolve, reject) => {

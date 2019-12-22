@@ -7,7 +7,6 @@ function UserService(userModel) {
   this.userModel = userModel;
 }
 UserService.prototype.checkUserRegister = async function(body) {
-  const result = {};
   const { nickname, email, password, password2 } = body;
   const { errors, isValid } = user.validateRegister({
     nickname,
@@ -15,44 +14,45 @@ UserService.prototype.checkUserRegister = async function(body) {
     password,
     password2
   });
-  if (!isValid) {
-    result.errors = errors;
-    return result;
-  }
+  if (!isValid)
+    return {
+      errors
+    };
   const foundUser = await this.userModel.findUsers({
     nickname,
     email
   });
-  if (isEmpty(foundUser)) return result;
-  else {
-    result.errors = user.checkUser(foundUser[0], {
-      nickname,
-      email
-    });
-    return result;
-  }
+  return isEmpty(foundUser)
+    ? {}
+    : {
+        errors: user.checkUser(foundUser[0], {
+          nickname,
+          email
+        })
+      };
 };
 UserService.prototype.checkUserLogin = async function(body) {
-  const result = {};
   const { email, password } = body;
   const { errors, isValid } = user.validateLogin({
     email,
     password
   });
-  if (!isValid) {
-    result.errors = errors;
-    return result;
-  }
+  if (!isValid)
+    return {
+      errors
+    };
   const foundUser = await this.userModel.findOneUser({
     email
   });
-  if (isEmpty(foundUser)) {
-    result.errors = { notExist: 'Пользователь не найден' };
-    return result;
-  } else {
-    result.user = foundUser;
-    return result;
-  }
+  return isEmpty(foundUser)
+    ? {
+        errors: { notExist: 'Пользователь не найден' },
+        user: {}
+      }
+    : {
+        errors,
+        user: foundUser
+      };
 };
 
 UserService.prototype.createUser = async function(body) {
@@ -63,6 +63,13 @@ UserService.prototype.createUser = async function(body) {
     email,
     password: hashedPassword
   });
+};
+UserService.prototype.comparePasswords = async function(body, hash) {
+  const { password } = body;
+  const isMatched = await crypto.comparePasswords(password, hash);
+  return isMatched
+    ? { errors: {}, isMatched }
+    : { errors: { password: 'Неверный пароль' }, isMatched };
 };
 
 UserService.prototype.setToken = async function(user) {
