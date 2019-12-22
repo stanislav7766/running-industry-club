@@ -7,7 +7,8 @@
     "start": "node server.js",
     "server": "supervisor server.js",
     "client": "cd ../frontend && yarn start --prefix frontend",
-    "dev": "npm-run-all -p -r \"server\" \"client\""
+    "dev": "npm-run-all -p -r \"server\" \"client\"",
+    "lint": "eslint ."
   },
   "author": "stanislav7766",
   "license": "MIT",

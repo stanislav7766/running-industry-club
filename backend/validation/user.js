@@ -1,8 +1,7 @@
-'use strict';
 const validator = require('./validator');
 const REQUIRED_FIELD = 'Это поле обязательно';
 
-const checkUser = (user, { nickname, email }) => {
+const checkUser = (user, {nickname, email}) => {
   const errors = {};
   if (user.nickname === nickname)
     errors.nickname = 'Пользователь уже зарегистрирован';
@@ -11,21 +10,21 @@ const checkUser = (user, { nickname, email }) => {
   return errors;
 };
 
-const validateLogin = ({ email, password }) => {
+const validateLogin = ({email, password}) => {
   const errors = {};
   if (!validator.isEmail(email)) errors.email = 'Введите правильную почту';
   if (validator.isEmpty(password)) errors.password = REQUIRED_FIELD;
   return {
     errors,
-    isValid: validator.isEmpty(errors)
+    isValid: validator.isEmpty(errors),
   };
 };
 
-const validateRegister = ({ email, password, password2, nickname }) => {
+const validateRegister = ({email, password, password2, nickname}) => {
   const errors = {};
   if (validator.isEmpty(password)) errors.password = REQUIRED_FIELD;
 
-  if (!validator.isLength(password, { min: 6, max: 30 }))
+  if (!validator.isLength(password, {min: 6, max: 30}))
     errors.password = 'Количество символов должно быть между 6 и 30';
 
   if (validator.isEmpty(password2)) errors.password2 = REQUIRED_FIELD;
@@ -38,12 +37,12 @@ const validateRegister = ({ email, password, password2, nickname }) => {
   if (!validator.isEmail(email)) errors.email = 'Неверно введена почта';
   return {
     errors,
-    isValid: validator.isEmpty(errors)
+    isValid: validator.isEmpty(errors),
   };
 };
 
 module.exports = {
   checkUser,
   validateRegister,
-  validateLogin
+  validateLogin,
 };

@@ -1,79 +1,84 @@
-'use strict';
-const user = require('../validation/user');
-const { isEmpty } = require('../validation/validator');
+const {
+  validateLogin,
+  validateRegister,
+  checkUser,
+} = require('../validation/user');
+const {isEmpty} = require('../validation/validator');
 const crypto = require('../crypto');
 
 function UserService(userModel) {
   this.userModel = userModel;
 }
 UserService.prototype.checkUserRegister = async function(body) {
-  const { nickname, email, password, password2 } = body;
-  const { errors, isValid } = user.validateRegister({
+  const {nickname, email, password, password2} = body;
+  const {errors, isValid} = validateRegister({
     nickname,
     email,
     password,
-    password2
+    password2,
   });
-  if (!isValid)
+  if (!isValid) {
     return {
-      errors
+      errors,
     };
+  }
   const foundUser = await this.userModel.findUsers({
     nickname,
-    email
+    email,
   });
   return isEmpty(foundUser)
     ? {}
     : {
-        errors: user.checkUser(foundUser[0], {
+        errors: checkUser(foundUser[0], {
           nickname,
-          email
-        })
+          email,
+        }),
       };
 };
 UserService.prototype.checkUserLogin = async function(body) {
-  const { email, password } = body;
-  const { errors, isValid } = user.validateLogin({
+  const {email, password} = body;
+  const {errors, isValid} = validateLogin({
     email,
-    password
+    password,
   });
-  if (!isValid)
+  if (!isValid) {
     return {
-      errors
+      errors,
     };
+  }
   const foundUser = await this.userModel.findOneUser({
-    email
+    email,
   });
   return isEmpty(foundUser)
     ? {
-        errors: { notExist: 'Пользователь не найден' },
-        user: {}
+        errors: {notExist: 'Пользователь не найден'},
+        user: {},
       }
     : {
         errors,
-        user: foundUser
+        user: foundUser,
       };
 };
 
 UserService.prototype.createUser = async function(body) {
-  const { nickname, email, password } = body;
+  const {nickname, email, password} = body;
   const hashedPassword = await crypto.hashPassword(password);
   return await this.userModel.createUser({
     nickname,
     email,
-    password: hashedPassword
+    password: hashedPassword,
   });
 };
 UserService.prototype.comparePasswords = async function(body, hash) {
-  const { password } = body;
+  const {password} = body;
   const isMatched = await crypto.comparePasswords(password, hash);
   return isMatched
-    ? { errors: {}, isMatched }
-    : { errors: { password: 'Неверный пароль' }, isMatched };
+    ? {errors: {}, isMatched}
+    : {errors: {password: 'Неверный пароль'}, isMatched};
 };
 
 UserService.prototype.setToken = async function(user) {
-  const { id, email, nickname } = user;
-  return await crypto.setToken({ id, email, nickname });
+  const {id, email, nickname} = user;
+  return await crypto.setToken({id, email, nickname});
 };
 module.exports = UserService;

@@ -1,9 +1,7 @@
-'use strict';
-
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const { secretOrKey } = require('../config/keys');
+const {secretOrKey} = require('../config/keys');
 
 const hashedPass = password =>
   new Promise((resolve, reject) =>
@@ -13,12 +11,12 @@ const hashedPass = password =>
         bcrypt
           .hash(password, salt)
           .then(hash => resolve(hash))
-          .catch(err => reject(err))
+          .catch(err => reject(err)),
       )
       .catch(err => {
         err.name = hashedPass.name;
         reject(err);
-      })
+      }),
   );
 
 const comparePass = (password, hash) =>
@@ -29,14 +27,14 @@ const comparePass = (password, hash) =>
       .catch(err => {
         err.name = comparePass.name;
         reject(err);
-      })
+      }),
   );
-const jwtSign = ({ id, nickname, email }) =>
+const jwtSign = ({id, nickname, email}) =>
   new Promise((resolve, reject) => {
     jwt.sign(
-      { id, nickname, email },
+      {id, nickname, email},
       secretOrKey,
-      { expiresIn: process.env.EXPIRES_TOKEN },
+      {expiresIn: process.env.EXPIRES_TOKEN},
       (err, token) => {
         if (err) {
           err.name = jwtSign.name;
@@ -44,15 +42,15 @@ const jwtSign = ({ id, nickname, email }) =>
         }
         resolve({
           success: true,
-          token: `Bearer ${token}`
+          token: `Bearer ${token}`,
         });
-      }
+      },
     );
   });
 
 module.exports = {
   hashPassword: async password => await hashedPass(password),
   comparePasswords: async (password, hash) => await comparePass(password, hash),
-  setToken: async ({ id, nickname, email }) =>
-    await jwtSign({ id, nickname, email })
+  setToken: async ({id, nickname, email}) =>
+    await jwtSign({id, nickname, email}),
 };

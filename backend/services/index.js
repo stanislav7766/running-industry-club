@@ -1,4 +1,3 @@
-'use strict';
 const UserService = require('./user');
 const userModel = require('../models');
 

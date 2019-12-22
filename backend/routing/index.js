@@ -1,4 +1,3 @@
-'use strict';
 const userController = require('../controllers');
 const userRouting = require('./user');
 

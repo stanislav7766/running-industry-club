@@ -1,5 +1,4 @@
-'use strict';
-const { Router } = require('express');
+const {Router} = require('express');
 const userRouter = Router();
 
 module.exports = userController => {

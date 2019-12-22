@@ -1,6 +1,5 @@
-'use strict';
-const { isEmpty } = require('../validation/validator');
-const { errorHandler } = require('../middlewares');
+const {isEmpty} = require('../validation/validator');
+const {errorHandler} = require('../middlewares');
 
 function UserController(userService) {
   this.userService = userService;
@@ -8,12 +7,12 @@ function UserController(userService) {
   this.registerUser = this.registerUser.bind(this);
 }
 UserController.prototype.loginUser = async function(req, res, next) {
-  const { errors, user } = await this.userService.checkUserLogin(req.body);
+  const {errors, user} = await this.userService.checkUserLogin(req.body);
   if (isEmpty(errors)) {
     try {
       const result = await this.userService.comparePasswords(
         req.body,
-        user.password
+        user.password,
       );
       if (isEmpty(result.errors)) {
         const token = await this.userService.setToken(user);
@@ -21,33 +20,36 @@ UserController.prototype.loginUser = async function(req, res, next) {
           .status(200)
           .json(token)
           .end();
-      } else
+      } else {
         res
           .status(400)
           .json(result.errors)
           .end();
+      }
     } catch (error) {
-      errorHandler(error, req, res);
+      errorHandler({error, req, res, statusCode: 500});
     }
-  } else
+  } else {
     res
       .status(400)
       .json(errors)
       .end();
+  }
 };
 UserController.prototype.registerUser = async function(req, res, next) {
-  const { errors } = await this.userService.checkUserRegister(req.body);
+  const {errors} = await this.userService.checkUserRegister(req.body);
   if (isEmpty(errors)) {
     try {
       await this.userService.createUser(req.body);
       res.status(200).end();
     } catch (error) {
-      errorHandler(error, req, res);
+      errorHandler({error, req, res, statusCode: 500});
     }
-  } else
+  } else {
     res
       .status(400)
       .json(errors)
       .end();
+  }
 };
 module.exports = UserController;
