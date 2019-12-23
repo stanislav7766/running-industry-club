@@ -1,4 +1,6 @@
 require('dotenv').config();
 
-export const mongoURI = process.env.MONGO_URI;
-export const secretOrKey = process.env.SECRET;
+module.exports = {
+  mongoURI: process.env.MONGO_URI,
+  secretOrKey: process.env.SECRET,
+};

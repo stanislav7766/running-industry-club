@@ -2,9 +2,10 @@ const {
   validateLogin,
   validateRegister,
   checkUser,
-} = require('../validation/user');
-const {isEmpty} = require('../validation/validator');
+} = require('../tools/validation/user');
+const {isEmpty} = require('../tools/validation/validator');
 const crypto = require('../crypto');
+const {NOT_EXIST, PASSWORD} = require('../constants/http-send-response');
 
 function UserService(userModel) {
   this.userModel = userModel;
@@ -51,7 +52,7 @@ UserService.prototype.checkUserLogin = async function(body) {
   });
   return isEmpty(foundUser)
     ? {
-        errors: {notExist: 'Пользователь не найден'},
+        errors: {NOT_EXIST},
         user: {},
       }
     : {
@@ -72,9 +73,7 @@ UserService.prototype.createUser = async function(body) {
 UserService.prototype.comparePasswords = async function(body, hash) {
   const {password} = body;
   const isMatched = await crypto.comparePasswords(password, hash);
-  return isMatched
-    ? {errors: {}, isMatched}
-    : {errors: {password: 'Неверный пароль'}, isMatched};
+  return isMatched ? {errors: {}, isMatched} : {errors: {PASSWORD}, isMatched};
 };
 
 UserService.prototype.setToken = async function(user) {

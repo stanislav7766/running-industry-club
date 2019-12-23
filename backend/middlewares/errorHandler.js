@@ -1,9 +1,9 @@
-const logger = require('../tools/logger');
+const logger = require('../tools/logger/');
 
-const errorHandler = ({err, req, res, statusCode}) => {
+const errorHandler = ({error, req, res, statusCode}) => {
   logger.useLogger('error', {
-    msg: err.message,
-    name: err.name,
+    msg: error.message,
+    name: error.name,
   });
   res.status(statusCode).end();
 };

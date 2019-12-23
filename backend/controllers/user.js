@@ -1,5 +1,10 @@
-const {isEmpty} = require('../validation/validator');
+const {isEmpty} = require('../tools/validation/validator');
 const {errorHandler} = require('../middlewares');
+const {
+  OK,
+  BAD_REQUEST,
+  INTERNAL_SERVER_ERROR,
+} = require('../constants/http-status-code');
 
 function UserController(userService) {
   this.userService = userService;
@@ -17,21 +22,21 @@ UserController.prototype.loginUser = async function(req, res, next) {
       if (isEmpty(result.errors)) {
         const token = await this.userService.setToken(user);
         res
-          .status(200)
+          .status(OK)
           .json(token)
           .end();
       } else {
         res
-          .status(400)
+          .status(BAD_REQUEST)
           .json(result.errors)
           .end();
       }
     } catch (error) {
-      errorHandler({error, req, res, statusCode: 500});
+      errorHandler({error, req, res, statusCode: INTERNAL_SERVER_ERROR});
     }
   } else {
     res
-      .status(400)
+      .status(BAD_REQUEST)
       .json(errors)
       .end();
   }
@@ -41,13 +46,13 @@ UserController.prototype.registerUser = async function(req, res, next) {
   if (isEmpty(errors)) {
     try {
       await this.userService.createUser(req.body);
-      res.status(200).end();
+      res.status(OK).end();
     } catch (error) {
-      errorHandler({error, req, res, statusCode: 500});
+      errorHandler({error, req, res, statusCode: INTERNAL_SERVER_ERROR});
     }
   } else {
     res
-      .status(400)
+      .status(BAD_REQUEST)
       .json(errors)
       .end();
   }

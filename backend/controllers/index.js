@@ -1,4 +1,3 @@
-'use strict';
 const userService = require('../services');
 const UserController = require('./user');
 
