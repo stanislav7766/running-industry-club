@@ -1,7 +1,10 @@
 .vscode
 */node_modules
+/node_modules
 */.env
+/.env
 */yarn.lock
+/yarn.lock
 # production
 /build
 
