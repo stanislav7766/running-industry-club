@@ -4,9 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "server": "cd ./backend/ && yarn install && supervisor ./server.js",
-    "client": "cd ./frontend && yarn start --prefix frontend",
-    "build-client": "cd ./frontend && yarn install && serve -s build",
+    "server": "cd ./backend/ && npm install && supervisor ./server.js",
+    "client": "cd ./frontend && npm start --prefix frontend",
+    "build-client": "cd ./frontend && npm install && serve -s build",
     "start": "npm-run-all -p -r \"server\" \"build-client\""
   },
   "repository": {
