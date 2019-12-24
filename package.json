@@ -4,10 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node ./backend/server.js",
     "server": "supervisor ./backend/server.js",
     "client": "cd ./frontend && yarn start --prefix frontend",
-    "dev": "npm-run-all -p -r \"server\" \"client\""
+    "start": "npm-run-all -p -r \"server\" \"client\""
   },
   "repository": {
     "type": "git",
