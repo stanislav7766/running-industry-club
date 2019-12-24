@@ -6,7 +6,7 @@
   "scripts": {
     "server": "cd ./backend/ && npm install && node ./server.js",
     "client": "cd ./frontend && npm start --prefix frontend",
-    "build-client": "cd ./frontend && npm install && serve -s build",
+    "build-client": "cd ./frontend  && serve -s build",
     "start": "cd ./frontend && npm install && serve -s build"
   },
   "repository": {
