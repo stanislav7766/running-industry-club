@@ -21,7 +21,9 @@ import Feedbacks from './components/feedbacks/Feedbacks';
 import { setCurrentUser, logoutUser } from './actions/authActions';
 import BookedRuns from './components/dashboard/booked-runs/BookedRuns';
 
-if (localStorage.jwtToken) {
+if (localStorage.jwtToken && localStorage.jwtToken !== 'undefined') {
+  console.log(localStorage.jwtToken, typeof localStorage.jwtToken);
+
   setAuthToken(localStorage.jwtToken);
   const decoded = jwt_decode(localStorage.jwtToken);
   store.dispatch(setCurrentUser(decoded));

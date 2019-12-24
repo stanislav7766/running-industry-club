@@ -4,11 +4,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const users = require('./routes/api/users');
+const cors = require('cors');
+
 const feedbacks = require('./routes/api/feedbacks');
 const profiles = require('./routes/api/profiles');
 const passport = require('passport');
 const app = express();
 require('dotenv').config();
+app.use(cors());
 
 const db = require('./config/keys').mongoURI;
 const opt = {

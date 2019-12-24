@@ -3,7 +3,10 @@ import jwt_decode from 'jwt-decode';
 import setAuthToken from '../utils/setAuthToken';
 export const registerUser = (userData, history) => async dispatch => {
   try {
-    await axios.post('/api/users/register', userData);
+    await axios.post(
+      `${process.env.REACT_APP_PROXY_SERVER}/api/users/register`,
+      userData
+    );
     history.push('/login');
   } catch (err) {
     dispatch({
@@ -14,13 +17,21 @@ export const registerUser = (userData, history) => async dispatch => {
 };
 export const loginUser = (userData, history) => async dispatch => {
   try {
-    const res = await axios.post('/api/users/login', userData);
+    const res = await axios.post(
+      `${process.env.REACT_APP_PROXY_SERVER}/api/users/login`,
+
+      userData
+    );
+    console.log(res);
+
     const { token } = await res.data;
     localStorage.setItem('jwtToken', token);
     setAuthToken(token);
     dispatch(setCurrentUser(jwt_decode(token)));
     history.push('/');
   } catch (err) {
+    console.log(err);
+
     dispatch({
       type: 'GET_ERRORS',
       payload: err.response.data

@@ -6,7 +6,7 @@ import isEmpty from '../components/validation/isEmpty';
 export const deleteAccount = () => async dispatch => {
   if (window.confirm('Are you sure? This can Not be undone!'))
     try {
-      await axios.delete('/api/profile');
+      await axios.delete(`${process.env.REACT_APP_PROXY_SERVER}/api/profile`);
       dispatch(clearCurrentProfile());
       dispatch(setCurrentUser({}));
       localStorage.removeItem('jwtToken');
@@ -22,7 +22,9 @@ export const deleteAccount = () => async dispatch => {
 export const getProfiles = () => async dispatch => {
   dispatch(setProfileLoading());
   try {
-    const res = await axios.get('/api/profile/all');
+    const res = await axios.get(
+      `${process.env.REACT_APP_PROXY_SERVER}/api/profile/all`
+    );
     dispatch({
       type: 'GET_PROFILES',
       payload: await res.data
@@ -38,7 +40,9 @@ export const getProfiles = () => async dispatch => {
 export const getCurrentProfile = () => async dispatch => {
   dispatch(setProfileLoading());
   try {
-    const res = await axios.get('/api/profile');
+    const res = await axios.get(
+      `${process.env.REACT_APP_PROXY_SERVER}/api/profile`
+    );
     dispatch({
       type: 'GET_PROFILE',
       payload: await res.data
@@ -53,7 +57,9 @@ export const getCurrentProfile = () => async dispatch => {
 
 export const getProfileBooking = async () => {
   try {
-    const res = await axios.get('/api/profile/run-booking');
+    const res = await axios.get(
+      `${process.env.REACT_APP_PROXY_SERVER}/api/profile/run-booking`
+    );
     return await res.data;
   } catch (err) {
     console.log(err);
@@ -63,7 +69,10 @@ export const getProfileBooking = async () => {
 
 export const createProfile = (profileData, history) => async dispatch => {
   try {
-    await axios.post('/api/profile', profileData);
+    await axios.post(
+      `${process.env.REACT_APP_PROXY_SERVER}/api/profile`,
+      profileData
+    );
     history.push('/own-profile');
   } catch (err) {
     dispatch({
@@ -98,7 +107,7 @@ export const addRun = (
   try {
     await axios({
       method: 'post',
-      url: '/api/profile/runs',
+      url: `${process.env.REACT_APP_PROXY_SERVER}/api/profile/runs`,
       data: bodyFormData,
       headers: { 'Content-Type': 'multipart/form-data' }
     });
@@ -112,7 +121,10 @@ export const addRun = (
 };
 export const bookingRun = runData => async dispatch => {
   try {
-    const res = await axios.post('/api/profile/run-booking', runData);
+    const res = await axios.post(
+      `${process.env.REACT_APP_PROXY_SERVER}/api/profile/run-booking`,
+      runData
+    );
     isEmpty(res.data.errors) && dispatch(setError());
   } catch (err) {
     dispatch({
@@ -129,7 +141,9 @@ export const resetErrors = () => dispatch =>
 
 export const deleteRun = id => async dispatch => {
   try {
-    const res = await axios.delete(`/api/profile/runs/${id}`);
+    const res = await axios.delete(
+      `${process.env.REACT_APP_PROXY_SERVER}/api/profile/runs/${id}`
+    );
     dispatch({
       type: 'GET_PROFILE',
       payload: await res.data
@@ -144,7 +158,9 @@ export const deleteRun = id => async dispatch => {
 
 export const deleteBookedRun = id => async dispatch => {
   try {
-    const res = await axios.delete(`/api/profile/booked-runs/${id}`);
+    const res = await axios.delete(
+      `${process.env.REACT_APP_PROXY_SERVER}/api/profile/booked-runs/${id}`
+    );
     dispatch({
       type: 'GET_PROFILE',
       payload: await res.data
@@ -159,7 +175,9 @@ export const deleteBookedRun = id => async dispatch => {
 export const paidBookedRun = id => async dispatch => {
   if (window.confirm('Вы желаете оплатить выбранный забег?'))
     try {
-      const res = await axios.post(`/api/profile/booked-runs/${id}`);
+      const res = await axios.post(
+        `${process.env.REACT_APP_PROXY_SERVER}/api/profile/booked-runs/${id}`
+      );
       dispatch({
         type: 'GET_PROFILE',
         payload: await res.data

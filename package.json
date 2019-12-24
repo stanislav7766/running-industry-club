@@ -7,7 +7,7 @@
     "server": "supervisor ./backend/server.js",
     "client": "cd ./frontend && yarn start --prefix frontend",
     "build-client": "cd ./frontend && serve -s build",
-    "start": "npm-run-all -p -r \"server\" \"client\""
+    "start": "npm-run-all -p -r \"server\" \"build-client\""
   },
   "repository": {
     "type": "git",
