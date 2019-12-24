@@ -40,9 +40,12 @@ export const getProfiles = () => async dispatch => {
 export const getCurrentProfile = () => async dispatch => {
   dispatch(setProfileLoading());
   try {
+    console.log('here');
+
     const res = await axios.get(
       `${process.env.REACT_APP_PROXY_SERVER}/api/profile`
     );
+
     dispatch({
       type: 'GET_PROFILE',
       payload: await res.data

@@ -22,16 +22,12 @@ export const loginUser = (userData, history) => async dispatch => {
 
       userData
     );
-    console.log(res);
-
     const { token } = await res.data;
     localStorage.setItem('jwtToken', token);
     setAuthToken(token);
     dispatch(setCurrentUser(jwt_decode(token)));
     history.push('/');
   } catch (err) {
-    console.log(err);
-
     dispatch({
       type: 'GET_ERRORS',
       payload: err.response.data
