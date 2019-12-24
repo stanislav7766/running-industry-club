@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "server": "supervisor ./backend/server.js",
-    "client": "cd ./frontend && serve -s build --prefix frontend",
+    "client": "cd ./frontend && yarn start --prefix frontend",
+    "build-client": "cd ./frontend && serve -s build",
     "start": "npm-run-all -p -r \"server\" \"client\""
   },
   "repository": {
