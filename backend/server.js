@@ -29,7 +29,9 @@ app.use(bodyParser.json());
 
 app.use(passport.initialize());
 require('./config/passport')(passport);
-
+app.get('/favicon.ico', async (req, res) => {
+  console.log('here');
+});
 app.use('/api/users', users);
 app.use('/api/profile', profiles);
 app.use('/api/feedbacks', feedbacks);
