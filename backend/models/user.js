@@ -25,6 +25,9 @@ const userSchema = new Schema({
 userSchema.statics.findUsers = async function({nickname, email}) {
   return await this.find({$or: [{nickname}, {email}]});
 };
+userSchema.statics.findUserById = async function(id) {
+  return await this.findById(id);
+};
 userSchema.statics.findOneUser = async function({email}) {
   return await this.findOne({email});
 };

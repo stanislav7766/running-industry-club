@@ -1,11 +1,13 @@
 const winston = require('winston');
 require('dotenv').config();
+
 const {combine, label, printf, colorize, timestamp} = winston.format;
 const logLabel = process.env.LOG_LABEL;
 const logTimestamp = () => new Date(Date.now()).toUTCString();
 const logMessageFormat = printf(
   info => `[${info.label}]: ${info.message} | ${info.timestamp}`,
 );
+
 winston.addColors({
   error: 'red',
   warn: 'yellow',
@@ -33,6 +35,8 @@ const logger = winston.createLogger({
     }),
   ],
 });
+
 logger.useLogger = (level, {msg, name}) =>
   logger.log(level, `${name} : ${msg}`);
+
 module.exports = logger;

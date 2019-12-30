@@ -1,5 +1,8 @@
+const {userModel, profileModel} = require('../models');
 const UserService = require('./user');
-const userModel = require('../models');
+const ProfileService = require('./profile');
 
 const userService = new UserService(userModel);
-module.exports = userService;
+const profileService = new ProfileService(profileModel);
+
+module.exports = {userService, profileService};

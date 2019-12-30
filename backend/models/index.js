@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const userModel = require('./user');
-require('dotenv').config();
-const {mongoURI} = require('../config/keys');
+const profileModel = require('./profile');
+const logger = require('../tools/logger');
 
 const opts = {
   useNewUrlParser: true,
@@ -9,6 +9,19 @@ const opts = {
   useFindAndModify: false,
   useCreateIndex: true,
 };
-mongoose.connect(mongoURI, opts);
+(async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, opts);
+    logger.useLogger('info', {
+      msg: 'Database connected',
+      name: 'MongoDB',
+    });
+  } catch (error) {
+    logger.useLogger('error', {
+      msg: (error.reason && error.reason) || error.message,
+      name: error.name,
+    });
+  }
+})();
 
-module.exports = userModel;
+module.exports = {userModel, profileModel};

@@ -1,10 +1,5 @@
-const {isEmpty} = require('../tools/validation/validator');
 const {errorHandler} = require('../middlewares');
-const {
-  OK,
-  BAD_REQUEST,
-  INTERNAL_SERVER_ERROR,
-} = require('../constants/http-status-code');
+const {OK} = require('../constants/http-status-code');
 
 function UserController(userService) {
   this.userService = userService;
@@ -12,49 +7,25 @@ function UserController(userService) {
   this.registerUser = this.registerUser.bind(this);
 }
 UserController.prototype.loginUser = async function(req, res, next) {
-  const {errors, user} = await this.userService.checkUserLogin(req.body);
-  if (isEmpty(errors)) {
-    try {
-      const result = await this.userService.comparePasswords(
-        req.body,
-        user.password,
-      );
-      if (isEmpty(result.errors)) {
-        const token = await this.userService.setToken(user);
-        res
-          .status(OK)
-          .json(token)
-          .end();
-      } else {
-        res
-          .status(BAD_REQUEST)
-          .json(result.errors)
-          .end();
-      }
-    } catch (error) {
-      errorHandler({error, req, res, statusCode: INTERNAL_SERVER_ERROR});
-    }
-  } else {
+  try {
+    const user = await this.userService.checkUserLogin(req.body);
+    await this.userService.comparePasswords(req.body, user.password);
+    const token = await this.userService.setToken(user);
     res
-      .status(BAD_REQUEST)
-      .json(errors)
+      .status(OK)
+      .json(token)
       .end();
+  } catch (error) {
+    errorHandler({error, req, res});
   }
 };
 UserController.prototype.registerUser = async function(req, res, next) {
-  const {errors} = await this.userService.checkUserRegister(req.body);
-  if (isEmpty(errors)) {
-    try {
-      await this.userService.createUser(req.body);
-      res.status(OK).end();
-    } catch (error) {
-      errorHandler({error, req, res, statusCode: INTERNAL_SERVER_ERROR});
-    }
-  } else {
-    res
-      .status(BAD_REQUEST)
-      .json(errors)
-      .end();
+  try {
+    await this.userService.checkUserRegister(req.body);
+    await this.userService.createUser(req.body);
+    res.status(OK).end();
+  } catch (error) {
+    errorHandler({error, req, res});
   }
 };
 module.exports = UserController;

@@ -2,10 +2,10 @@
   "name": "backend-ric",
   "version": "1.0.0",
   "description": "backend side for the Running Industry Club",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "server": "supervisor server.js",
+    "start": "node index.js",
+    "server": "supervisor index.js",
     "client": "cd ../frontend && yarn start --prefix frontend",
     "dev": "npm-run-all -p -r \"server\" \"client\"",
     "lint": "eslint ."

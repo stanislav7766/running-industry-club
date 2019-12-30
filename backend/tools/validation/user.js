@@ -19,7 +19,7 @@ const checkUser = (user, {nickname, email}) => {
 const validateLogin = ({email, password}) => {
   const errors = {};
   if (!validator.isEmail(email)) errors.email = EMAIL_INCORRECT;
-  if (validator.isEmpty(password)) errors.password = REQUIRED_FIELD;
+  if (validator.isEmpty(password)) errors.password = FIELD_REQUIRED;
   return {
     errors,
     isValid: validator.isEmpty(errors),

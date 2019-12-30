@@ -1,6 +1,8 @@
-const userService = require('../services');
+const {userService, profileService} = require('../services');
 const UserController = require('./user');
+const ProfileController = require('./profile');
 
 const userController = new UserController(userService);
+const profileController = new ProfileController(profileService);
 
-module.exports = userController;
+module.exports = {userController, profileController};

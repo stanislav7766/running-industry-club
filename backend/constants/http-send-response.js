@@ -4,8 +4,12 @@ const NICKNAME_REGISTERED = 'Пользователь уже зарегистр�
 const EMAIL_REGISTERED = 'Данная почта уже зарегистрирована';
 const EMAIL_INCORRECT = 'Введите правильную почту';
 const FIELD_REQUIRED = 'Это поле обязательно';
+const AGE_INCORRECT = 'Укажите корректный возвраст';
 const PASSWORD_LENGTH = 'Количество символов должно быть между 6 и 30';
 const PASSWORDS_NOT_EQUAL = 'Пароли Должны Совпадать';
+const URL_INVALID = 'Укажите правильный URL';
+const PROFILE_NOT_EXIST = 'Ваш Профиль еще не сформирован';
+
 module.exports = {
   NOT_EXIST,
   PASSWORD,
@@ -15,4 +19,7 @@ module.exports = {
   FIELD_REQUIRED,
   PASSWORD_LENGTH,
   PASSWORDS_NOT_EQUAL,
+  AGE_INCORRECT,
+  URL_INVALID,
+  PROFILE_NOT_EXIST,
 };

@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const {secretOrKey} = require('../config/keys');
 
 const hashedPass = password =>
   new Promise((resolve, reject) =>
@@ -33,8 +32,8 @@ const jwtSign = ({id, nickname, email}) =>
   new Promise((resolve, reject) => {
     jwt.sign(
       {id, nickname, email},
-      secretOrKey,
-      {expiresIn: process.env.EXPIRES_TOKEN},
+      {secretOrKey: process.env.SECRET},
+      {expiresIn: Number(process.env.EXPIRES_TOKEN)},
       (err, token) => {
         if (err) {
           err.name = jwtSign.name;
