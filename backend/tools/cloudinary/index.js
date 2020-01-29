@@ -1,12 +1,11 @@
 const cloudinary = require('cloudinary').v2;
 const fetch = require('node-fetch');
-require('dotenv').config();
+const {
+  cloudinaryConfig,
+  cloudinaryOptions,
+} = require('../../constants/configs');
 
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
-});
+cloudinary.config(cloudinaryConfig);
 
 const uploadPreview = (file, folder) =>
   uploadPreviewHelper(file, folder)
@@ -19,21 +18,15 @@ const uploadPreview = (file, folder) =>
       return err;
     });
 
-const uploadPreviewHelper = (image, folder) => {
-  const cloudinaryOptions = {
-    resource_type: 'image',
-    folder: `${process.env.CLOUDINARY_CLOUD_FOLDER}/${folder}`,
-    format: 'jpg',
-    // async: true //if async - true, image will be loaded but status - pending and cant get url, only public_id
-  };
-  return new Promise((resolve, reject) =>
+const uploadPreviewHelper = (image, folder) =>
+  new Promise((resolve, reject) =>
     cloudinary.uploader
-      .upload_stream(cloudinaryOptions, (err, res) =>
+      .upload_stream(cloudinaryOptions(folder), (err, res) =>
         err ? reject(err) : resolve(res),
       )
       .end(image.buffer),
   );
-};
+
 const removeFolder = async folder_name =>
   await new Promise((resolve, reject) => {
     cloudinary.api.delete_resources_by_prefix(

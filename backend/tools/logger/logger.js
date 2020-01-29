@@ -1,5 +1,5 @@
 const winston = require('winston');
-require('dotenv').config();
+// require('dotenv').config();
 
 const {
   format: {combine, label, printf, colorize, timestamp},

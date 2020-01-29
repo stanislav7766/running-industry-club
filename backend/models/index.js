@@ -2,16 +2,11 @@ const mongoose = require('mongoose');
 const userModel = require('./user');
 const profileModel = require('./profile');
 const logger = require('../tools/logger');
+const {mongooseConfig} = require('../constants/configs');
 
-const opts = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true,
-};
 (async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, opts);
+    await mongoose.connect(process.env.MONGO_URI, mongooseConfig);
     logger.useLogger('info', {
       msg: 'Database connected',
       name: 'MongoDB',

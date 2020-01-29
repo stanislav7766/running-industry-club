@@ -1,8 +1,6 @@
 const multer = require('multer');
+const {multerConfig} = require('../constants/configs');
 
-const uploadImage = multer({
-  limits: {
-    fileSize: 1024 * 1024,
-  },
-});
+const uploadImage = multer(multerConfig);
+
 module.exports = () => uploadImage.single('preview');

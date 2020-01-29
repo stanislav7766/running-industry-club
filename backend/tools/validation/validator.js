@@ -45,41 +45,41 @@ const isInstanceError = obj => obj instanceof Error;
 
 const validateProp = (prop, value) =>
   ({
-    email: () => (!isEmail(value) && EMAIL_INCORRECT) || '',
-    nickname: () => (isEmpty(value) && FIELD_REQUIRED) || '',
-    status: () => ((isEmpty(value) || value === '0') && FIELD_REQUIRED) || '',
-    name: () => (isEmpty(value) && FIELD_REQUIRED) || '',
-    nameRun: () => (isEmpty(value) && FIELD_REQUIRED) || '',
-    location: () => (isEmpty(value) && FIELD_REQUIRED) || '',
-    locationRun: () => (isEmpty(value) && FIELD_REQUIRED) || '',
-    bio: () => (isEmpty(value) && FIELD_REQUIRED) || '',
-    age: () => (!isNumber(value) && AGE_INCORRECT) || '',
-    website: () => (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
-    youtube: () => (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
-    twitter: () => (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
-    facebook: () => (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
-    instagram: () => (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
-    password: () =>
+    email: (!isEmail(value) && EMAIL_INCORRECT) || '',
+    nickname: (isEmpty(value) && FIELD_REQUIRED) || '',
+    status: ((isEmpty(value) || value === '0') && FIELD_REQUIRED) || '',
+    name: (isEmpty(value) && FIELD_REQUIRED) || '',
+    nameRun: (isEmpty(value) && FIELD_REQUIRED) || '',
+    location: (isEmpty(value) && FIELD_REQUIRED) || '',
+    locationRun: (isEmpty(value) && FIELD_REQUIRED) || '',
+    bio: (isEmpty(value) && FIELD_REQUIRED) || '',
+    age: (!isNumber(value) && AGE_INCORRECT) || '',
+    website: (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
+    youtube: (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
+    twitter: (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
+    facebook: (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
+    instagram: (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
+    password:
       (isEmpty(value) && FIELD_REQUIRED) ||
       (!isLength(value, {min: 6, max: 30}) && PASSWORD_LENGTH) ||
       '',
-    password2: () =>
+    password2:
       (isEmpty(value) && FIELD_REQUIRED) ||
       (!isLength(value, {min: 6, max: 30}) && PASSWORD_LENGTH) ||
       '',
-    distance: () =>
+    distance:
       ((isEmpty(value) || value === '0') && FIELD_REQUIRED) ||
       (!Number(value) && DISTANCE_INCORRECT) ||
       '',
-    date: () =>
+    date:
       (isEmpty(value) && FIELD_REQUIRED) ||
       (!isDate(value) && DATE_INVALID) ||
       '',
-    time: () =>
+    time:
       (isEmpty(value) && FIELD_REQUIRED) ||
       (!isTime(value) && TIME_INVALID) ||
       '',
-  }[prop]());
+  }[prop]);
 
 module.exports = {
   isEmail,
