@@ -18,12 +18,12 @@ const calcPace = (dist, time) => {
 };
 
 const calculatedTotals = runs => {
-  const calcTotalKM = (arrOfObj, prop) =>
-    arrOfObj
+  const calcTotalKM = (arr, prop) =>
+    arr
       .reduce((acc, obj) => parseFloat(acc) + parseFloat(obj[prop]), 0)
       .toFixed(2);
-  const calcTotalTime = (arrOfObj, prop) => {
-    const time = arrOfObj.reduce(
+  const calcTotalTime = (arr, prop) => {
+    const time = arr.reduce(
       (acc, obj) => acc.add(moment.duration(obj[prop])),
       moment.duration(),
     );
