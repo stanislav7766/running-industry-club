@@ -22,11 +22,13 @@ const Register = props => {
     {
       name: 'password',
       value: '',
+      type: 'password',
       placeholder: 'Задайте Пароль'
     },
     {
       name: 'password2',
       value: '',
+      type: 'password',
       placeholder: 'Подтвердите Пароль'
     }
   ]);
@@ -38,6 +40,7 @@ const Register = props => {
         key={i}
         placeholder={obj.placeholder}
         name={obj.name}
+        type={obj.type && obj.type}
         value={obj.value}
         error={errors[obj.name]}
         onChange={onChange}

@@ -14,6 +14,7 @@ import {
   getCurrentProfile,
   deleteAccount
 } from '../../../actions/profileActions';
+import { logoutUser } from '../../../actions/authActions';
 import ProfileActions from '../profile-actions/';
 import Runs from '../happened-runs/runs';
 import Spinner from '../../common/Spinner';
@@ -47,6 +48,7 @@ const OwnProfile = props => {
 
   const onDeleteClick = () => {
     props.deleteAccount();
+    props.logoutUser();
     props.history.push('/');
   };
 
@@ -224,6 +226,7 @@ const OwnProfile = props => {
 OwnProfile.propTypes = {
   getCurrentProfile: PropTypes.func.isRequired,
   deleteAccount: PropTypes.func.isRequired,
+  logoutUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired
 };
@@ -231,6 +234,8 @@ const mapStateToProps = state => ({
   profile: state.profile,
   auth: state.auth
 });
-export default connect(mapStateToProps, { getCurrentProfile, deleteAccount })(
-  OwnProfile
-);
+export default connect(mapStateToProps, {
+  getCurrentProfile,
+  deleteAccount,
+  logoutUser
+})(OwnProfile);
