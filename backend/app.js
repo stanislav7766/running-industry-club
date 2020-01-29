@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('./tools/logger/');
+const {errorHandler, sendBadRequest} = require('./tools/errorHandler');
 const {userRouter, profileRouter} = require('./routing');
 const {jwtStrategy, initializePassport} = require('./middlewares');
 
@@ -25,5 +26,20 @@ Server.prototype.start = function() {
       name: 'App',
     }),
   );
+};
+
+Server.prototype.monitorError = function() {
+  logger.log('info', 'monitorError started');
+  //need send res and refactoring
+  process
+    .on('unhandledRejection', err => {
+      err.name = 'unhandledRejection';
+      errorHandler(err, () => sendBadRequest(null, {}));
+    })
+    .on('uncaughtException', err => {
+      err.name = 'uncaughtException';
+      errorHandler(err, () => sendBadRequest(null, {}));
+      // process.exit(1) or reload server;
+    });
 };
 module.exports = new Server();
