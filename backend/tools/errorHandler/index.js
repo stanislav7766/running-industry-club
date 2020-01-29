@@ -1,2 +1,2 @@
-const {errorHandler, sendBadRequest, monitorError} = require('./errorHandler');
-module.exports = {errorHandler, sendBadRequest, monitorError};
+const {errorHandler, sendBadRequest} = require('./errorHandler');
+module.exports = {errorHandler, sendBadRequest};
