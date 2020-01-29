@@ -1,31 +1,39 @@
-const {errorHandler} = require('../middlewares');
+const {errorHandler, sendBadRequest} = require('../tools/errorHandler');
 const {OK} = require('../constants/http-status-code');
 
-function UserController(userService) {
-  this.userService = userService;
+function Controller(service) {
+  this.service = service;
   this.loginUser = this.loginUser.bind(this);
   this.registerUser = this.registerUser.bind(this);
 }
-UserController.prototype.loginUser = async function(req, res, next) {
+Controller.prototype.loginUser = async function(req, res) {
   try {
-    const user = await this.userService.checkUserLogin(req.body);
-    await this.userService.comparePasswords(req.body, user.password);
-    const token = await this.userService.setToken(user);
+    const {email, password} = req.body;
+    const user = await this.service.checkUserLogin({email, password});
+    await this.service.comparePasswords(password, user.password);
+    const token = await this.service.setToken(user);
     res
       .status(OK)
       .json(token)
       .end();
   } catch (error) {
-    errorHandler({error, req, res});
+    errorHandler(error, () => sendBadRequest(res, error.errors));
   }
 };
-UserController.prototype.registerUser = async function(req, res, next) {
+Controller.prototype.registerUser = async function(req, res) {
   try {
-    await this.userService.checkUserRegister(req.body);
-    await this.userService.createUser(req.body);
+    const {nickname, email, password, password2} = req.body;
+    await this.service.checkUserRegister({
+      nickname,
+      email,
+      password,
+      password2,
+    });
+
+    await this.service.createUser({nickname, email, password});
     res.status(OK).end();
   } catch (error) {
-    errorHandler({error, req, res});
+    errorHandler(error, () => sendBadRequest(res, error.errors));
   }
 };
-module.exports = UserController;
+module.exports = Controller;

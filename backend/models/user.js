@@ -34,6 +34,9 @@ userSchema.statics.findOneUser = async function({email}) {
 userSchema.statics.createUser = async function(user) {
   return await new this(user).save();
 };
+userSchema.statics.deleteAccount = async function(_id) {
+  return await this.findOneAndRemove({_id});
+};
 
 const userModel = model('users', userSchema);
 

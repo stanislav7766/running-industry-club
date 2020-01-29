@@ -1,9 +1,18 @@
 const {Router} = require('express');
-const {jwtAuthenticate} = require('../middlewares');
-const profileRouter = Router();
+const {jwtAuthenticate, parseImageUpload} = require('../middlewares');
+const router = Router();
 
-module.exports = profileController => {
-  profileRouter.post('/', jwtAuthenticate, profileController.setProfile);
-  profileRouter.get('/', jwtAuthenticate, profileController.getCurrentProfile);
-  return profileRouter;
+module.exports = ({
+  setProfile,
+  setRun,
+  getCurrentProfile,
+  deleteRun,
+  deleteAccount,
+}) => {
+  router.post('/', jwtAuthenticate, setProfile);
+  router.get('/', jwtAuthenticate, getCurrentProfile);
+  router.delete('/runs/:run_id', jwtAuthenticate, deleteRun);
+  router.delete('/', jwtAuthenticate, deleteAccount);
+  router.post('/runs', jwtAuthenticate, parseImageUpload(), setRun);
+  return router;
 };

@@ -10,7 +10,10 @@ const hashedPass = password =>
         bcrypt
           .hash(password, salt)
           .then(hash => resolve(hash))
-          .catch(err => reject(err)),
+          .catch(err => {
+            err.name = hashedPass.name;
+            reject(err);
+          }),
       )
       .catch(err => {
         err.name = hashedPass.name;
@@ -32,7 +35,7 @@ const jwtSign = ({id, nickname, email}) =>
   new Promise((resolve, reject) => {
     jwt.sign(
       {id, nickname, email},
-      {secretOrKey: process.env.SECRET},
+      process.env.SECRET,
       {expiresIn: Number(process.env.EXPIRES_TOKEN)},
       (err, token) => {
         if (err) {

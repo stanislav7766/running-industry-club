@@ -9,6 +9,11 @@ const PASSWORD_LENGTH = 'Количество символов должно бы
 const PASSWORDS_NOT_EQUAL = 'Пароли Должны Совпадать';
 const URL_INVALID = 'Укажите правильный URL';
 const PROFILE_NOT_EXIST = 'Ваш Профиль еще не сформирован';
+const TIME_INVALID = 'Укажите корректный формат времени hh:mm:ss';
+const DATE_INVALID = 'Укажите корректный формат даты mm:dd:yyyy';
+const DISTANCE_INCORRECT = 'Укажите корректные данные';
+const RUN_PREVIEW_ERROR =
+  'Не удалось загрузить превью пробежки, повторите попытку позже';
 
 module.exports = {
   NOT_EXIST,
@@ -22,4 +27,8 @@ module.exports = {
   AGE_INCORRECT,
   URL_INVALID,
   PROFILE_NOT_EXIST,
+  TIME_INVALID,
+  DATE_INVALID,
+  DISTANCE_INCORRECT,
+  RUN_PREVIEW_ERROR,
 };

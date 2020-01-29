@@ -152,6 +152,9 @@ profileSchema.statics.findProfileById = async function(id) {
 profileSchema.statics.createProfile = async function(profile) {
   return await new this(profile).save();
 };
+profileSchema.statics.deleteProfile = async function(id) {
+  return await this.findOneAndRemove({'user.id': id});
+};
 
 const profileModel = model('profiles', profileSchema);
 

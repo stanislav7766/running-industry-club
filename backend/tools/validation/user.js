@@ -1,49 +1,43 @@
-const validator = require('./validator');
+const {isEmpty, isEquals, validateProp} = require('./validator');
 
 const {
   NICKNAME_REGISTERED,
   EMAIL_REGISTERED,
-  EMAIL_INCORRECT,
-  FIELD_REQUIRED,
-  PASSWORD_LENGTH,
   PASSWORDS_NOT_EQUAL,
 } = require('../../constants/http-send-response');
 
 const checkUser = (user, {nickname, email}) => {
   const errors = {};
-  if (user.nickname === nickname) errors.nickname = NICKNAME_REGISTERED;
-  else if (user.email === email) errors.email = EMAIL_REGISTERED;
+  if (isEquals(user.nickname, nickname)) errors.nickname = NICKNAME_REGISTERED;
+  else if (isEquals(user.email, email)) errors.email = EMAIL_REGISTERED;
   return errors;
 };
 
-const validateLogin = ({email, password}) => {
+const validateLogin = fields => {
   const errors = {};
-  if (!validator.isEmail(email)) errors.email = EMAIL_INCORRECT;
-  if (validator.isEmpty(password)) errors.password = FIELD_REQUIRED;
+  for (const key in fields) {
+    const res = validateProp(key, fields[key]);
+    if (res) errors[key] = res;
+  }
   return {
     errors,
-    isValid: validator.isEmpty(errors),
+    isValid: isEmpty(errors),
   };
 };
 
-const validateRegister = ({email, password, password2, nickname}) => {
+const validateRegister = fields => {
   const errors = {};
-  if (validator.isEmpty(password)) errors.password = FIELD_REQUIRED;
+  for (const key in fields) {
+    const res = validateProp(key, fields[key]);
+    if (res) errors[key] = res;
+  }
 
-  if (!validator.isLength(password, {min: 6, max: 30}))
-    errors.password = PASSWORD_LENGTH;
-
-  if (validator.isEmpty(password2)) errors.password2 = FIELD_REQUIRED;
-
-  if (!validator.isEquals(password, password2))
+  if (!isEquals(fields.password, fields.password2))
     errors.password2 = PASSWORDS_NOT_EQUAL;
 
-  if (validator.isEmpty(nickname)) errors.nickname = REQUIRED_FIELD;
-
-  if (!validator.isEmail(email)) errors.email = EMAIL_INCORRECT;
   return {
     errors,
-    isValid: validator.isEmpty(errors),
+    isValid: isEmpty(errors),
   };
 };
 

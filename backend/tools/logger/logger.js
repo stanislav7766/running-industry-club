@@ -1,9 +1,10 @@
 const winston = require('winston');
 require('dotenv').config();
 
-const {combine, label, printf, colorize, timestamp} = winston.format;
-const logLabel = process.env.LOG_LABEL;
-const logTimestamp = () => new Date(Date.now()).toUTCString();
+const {
+  format: {combine, label, printf, colorize, timestamp},
+} = winston;
+const logTimeStamp = () => new Date(Date.now()).toUTCString();
 const logMessageFormat = printf(
   info => `[${info.label}]: ${info.message} | ${info.timestamp}`,
 );
@@ -27,9 +28,9 @@ const logger = winston.createLogger({
       level: 'info',
       timestamps: true,
       format: combine(
-        label({label: logLabel}),
+        label({label: process.env.LOG_LABEL}),
         colorize({all: true}),
-        timestamp({format: logTimestamp}),
+        timestamp({format: logTimeStamp}),
         logMessageFormat,
       ),
     }),

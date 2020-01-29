@@ -8,64 +8,48 @@ const crypto = require('../tools/crypto');
 const {NOT_EXIST, PASSWORD} = require('../constants/http-send-response');
 const CustomError = require('../tools/customError');
 
-function UserService(userModel) {
-  this.userModel = userModel;
+function Service(model) {
+  this.model = model;
 }
-UserService.prototype.checkUserRegister = async function(body) {
-  const {nickname, email, password, password2} = body;
-  const {errors, isValid} = validateRegister({
-    nickname,
-    email,
-    password,
-    password2,
-  });
+Service.prototype.checkUserRegister = async function(fields) {
+  const {errors, isValid} = validateRegister(fields);
+
   if (!isValid)
     throw new CustomError('checkUserRegister', 'Not Valid User Input', errors);
 
-  const foundUser = await this.userModel.findUsers({
-    nickname,
-    email,
-  });
+  const foundUser = await this.model.findUsers(fields);
   if (!isEmpty(foundUser)) {
     throw new CustomError(
       'checkUserRegister',
       'User Already Exist',
-      checkUser(foundUser[0], {
-        nickname,
-        email,
-      }),
+      checkUser(foundUser[0], fields),
     );
   }
 };
-UserService.prototype.checkUserLogin = async function(body) {
-  const {email, password} = body;
-  const {errors, isValid} = validateLogin({
-    email,
-    password,
-  });
+Service.prototype.checkUserLogin = async function(fields) {
+  const {errors, isValid} = validateLogin(fields);
 
   if (!isValid)
     throw new CustomError('checkUserLogin', 'Not Valid User Input', errors);
 
-  const foundUser = await this.userModel.findOneUser({
-    email,
-  });
-  if (isEmpty(foundUser))
-    throw new CustomError('checkUserLogin', 'User Not Exist', {NOT_EXIST});
+  const foundUser = await this.model.findOneUser(fields);
+  if (isEmpty(foundUser)) {
+    throw new CustomError('checkUserLogin', 'User Not Exist', {
+      email: NOT_EXIST,
+    });
+  }
   return foundUser;
 };
 
-UserService.prototype.createUser = async function(body) {
-  const {nickname, email, password} = body;
-  const hashedPassword = await crypto.hashPassword(password);
-  return await this.userModel.createUser({
+Service.prototype.createUser = async function({nickname, email, password}) {
+  const hash = await crypto.hashPassword(password);
+  return await this.model.createUser({
     nickname,
     email,
-    password: hashedPassword,
+    password: hash,
   });
 };
-UserService.prototype.comparePasswords = async function(body, hash) {
-  const {password} = body;
+Service.prototype.comparePasswords = async function(password, hash) {
   const isMatched = await crypto.comparePasswords(password, hash);
   if (!isMatched) {
     throw new CustomError('comparePasswords', 'Incorrect Password', {
@@ -75,8 +59,7 @@ UserService.prototype.comparePasswords = async function(body, hash) {
   return isMatched;
 };
 
-UserService.prototype.setToken = async function(user) {
-  const {id, email, nickname} = user;
+Service.prototype.setToken = async function({id, email, nickname}) {
   return await crypto.setToken({id, email, nickname});
 };
-module.exports = UserService;
+module.exports = Service;
