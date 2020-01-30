@@ -7,6 +7,9 @@ const {
 
 cloudinary.config(cloudinaryConfig);
 
+const getFolderFetchLink = () =>
+  `https://${process.env.CLOUD_API_KEY}:${process.env.CLOUD_API_SECRET}@api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/folders/${process.env.CLOUDINARY_CLOUD_FOLDER}/${folder_name}`;
+
 const uploadPreview = (file, folder) =>
   uploadPreviewHelper(file, folder)
     .then(result => ({
@@ -36,12 +39,9 @@ const removeFolder = async folder_name =>
           error.name = removeFolder.name;
           reject(error);
         }
-        fetch(
-          `https://${process.env.CLOUD_API_KEY}:${process.env.CLOUD_API_SECRET}@api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/folders/${process.env.CLOUDINARY_CLOUD_FOLDER}/${folder_name}`,
-          {
-            method: 'DELETE',
-          },
-        )
+        fetch(getFolderFetchLink(), {
+          method: 'DELETE',
+        })
           .then(res => res.json())
           .then(res => res.deleted && resolve({success: true}))
           .catch(err => {
@@ -53,12 +53,9 @@ const removeFolder = async folder_name =>
   });
 const createFolder = async folder_name =>
   await new Promise((resolve, reject) => {
-    fetch(
-      `https://${process.env.CLOUD_API_KEY}:${process.env.CLOUD_API_SECRET}@api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/folders/${process.env.CLOUDINARY_CLOUD_FOLDER}/${folder_name}`,
-      {
-        method: 'POST',
-      },
-    )
+    fetch(getFolderFetchLink(), {
+      method: 'POST',
+    })
       .then(res => res.json())
       .then(res => res.success && resolve({success: true}))
       .catch(err => {

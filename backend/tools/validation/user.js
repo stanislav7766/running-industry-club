@@ -12,7 +12,7 @@ const checkUser = (user, {nickname, email}) => {
   else if (isEquals(user.email, email)) errors.email = EMAIL_REGISTERED;
   return errors;
 };
-
+//refactor like bodyFilter
 const validateLogin = fields => {
   const errors = {};
   for (const key in fields) {
