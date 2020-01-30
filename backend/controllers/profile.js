@@ -1,5 +1,6 @@
 const {errorHandler, sendBadRequest} = require('../tools/errorHandler');
 const {OK} = require('../constants/http-status-code');
+const {bodyFilter, PROFILE_FIELDS, RUN_FIELDS} = require('../constants/body');
 
 function Controller(service) {
   this.service = service;
@@ -13,44 +14,11 @@ function Controller(service) {
 Controller.prototype.setProfile = async function(req, res) {
   try {
     const {user} = req;
+    const fields = bodyFilter(req.body, PROFILE_FIELDS);
 
-    const {
-      status,
-      name,
-      location,
-      bio,
-      age,
-      website,
-      youtube,
-      twitter,
-      facebook,
-      instagram,
-    } = req.body;
-    await this.service.checkUserProfile({
-      status,
-      name,
-      location,
-      bio,
-      age,
-      website,
-      youtube,
-      twitter,
-      facebook,
-      instagram,
-    });
+    await this.service.checkUserProfile(fields);
     const profileFields = this.service.createProfileFields({
-      fields: {
-        status,
-        name,
-        location,
-        bio,
-        age,
-        website,
-        youtube,
-        twitter,
-        facebook,
-        instagram,
-      },
+      fields,
       user,
     });
 
@@ -96,20 +64,14 @@ Controller.prototype.getCurrentBookedRuns = async function(req, res) {
 
 Controller.prototype.setRun = async function(req, res) {
   try {
-    const {distance, nameRun, date, locationRun, time} = req.body;
+    const fields = bodyFilter(req.body, RUN_FIELDS);
     const {
       user: {id},
       file,
     } = req;
-    await this.service.checkUserRun({
-      distance,
-      nameRun,
-      date,
-      locationRun,
-      time,
-    });
+    await this.service.checkUserRun(fields);
     const runFields = await this.service.createRunFields({
-      fields: {distance, nameRun, date, locationRun, time},
+      fields,
       file,
       id,
     });

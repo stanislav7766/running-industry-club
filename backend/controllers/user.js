@@ -1,5 +1,10 @@
 const {errorHandler, sendBadRequest} = require('../tools/errorHandler');
 const {OK} = require('../constants/http-status-code');
+const {
+  bodyFilter,
+  REGISTER_FIELDS,
+  LOGIN_FIELDS,
+} = require('../constants/body');
 
 function Controller(service) {
   this.service = service;
@@ -8,9 +13,9 @@ function Controller(service) {
 }
 Controller.prototype.loginUser = async function(req, res) {
   try {
-    const {email, password} = req.body;
-    const user = await this.service.checkUserLogin({email, password});
-    await this.service.comparePasswords(password, user.password);
+    const fields = bodyFilter(req.body, LOGIN_FIELDS);
+    const user = await this.service.checkUserLogin(fields);
+    await this.service.comparePasswords(fields.password, user.password);
     const token = await this.service.setToken(user);
     res
       .status(OK)
@@ -22,15 +27,10 @@ Controller.prototype.loginUser = async function(req, res) {
 };
 Controller.prototype.registerUser = async function(req, res) {
   try {
-    const {nickname, email, password, password2} = req.body;
-    await this.service.checkUserRegister({
-      nickname,
-      email,
-      password,
-      password2,
-    });
+    const fields = bodyFilter(req.body, REGISTER_FIELDS);
 
-    await this.service.createUser({nickname, email, password});
+    await this.service.checkUserRegister(fields);
+    await this.service.createUser({fields: {nickname, email, password}});
     res.status(OK).end();
   } catch (error) {
     errorHandler(error, () => sendBadRequest(res, error.errors));

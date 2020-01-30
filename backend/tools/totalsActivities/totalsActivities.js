@@ -32,8 +32,8 @@ const calculatedTotals = runs => {
     );
   };
 
-  const calcTotalRun = (arrOfObj, prop1, prop2) =>
-    arrOfObj.reduce(
+  const calcTotalRun = (arr, prop1, prop2) =>
+    arr.reduce(
       (acc, obj) =>
         isEmpty(obj[prop1]) && isEmpty(obj[prop2]) ? (acc += 0) : (acc += 1),
       0,

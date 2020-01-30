@@ -4,5 +4,5 @@ require('dotenv').config();
 const server = require('./app');
 (() => {
   server.start();
-  server.monitorError();
+  // server.monitorError();
 })();
