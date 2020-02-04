@@ -28,7 +28,6 @@ Controller.prototype.loginUser = async function(req, res) {
 Controller.prototype.registerUser = async function(req, res) {
   try {
     const fields = bodyFilter(req.body, REGISTER_FIELDS);
-
     await this.service.checkUserRegister(fields);
     await this.service.createUser({fields: {nickname, email, password}});
     res.status(OK).end();

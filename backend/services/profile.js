@@ -38,6 +38,16 @@ Service.prototype.checkUserRun = function(fields) {
   if (!isValid)
     throw new CustomError('checkUserRun', 'Not Valid Run Input', errors);
 };
+Service.prototype.checkUserBookedRun = function(fields) {
+  const {errors, isValid} = validateRun(fields);
+  if (!isValid) {
+    throw new CustomError(
+      'checkUserBookedRun',
+      'Not Valid Booked Run Input',
+      errors,
+    );
+  }
+};
 Service.prototype.createProfileFields = function({fields, user}) {
   const obj = {};
   obj.user = {
@@ -58,6 +68,16 @@ Service.prototype.createProfileFields = function({fields, user}) {
   if (fields.facebook) obj.social.facebook = fields.facebook;
   if (fields.linkedin) obj.social.linkedin = fields.linkedin;
   if (fields.instagram) obj.social.instagram = fields.instagram;
+  return obj;
+};
+Service.prototype.createBookedRunFields = function({fields}) {
+  const obj = {};
+
+  if (fields.locationRun) obj.locationRun = fields.locationRun;
+  if (fields.distance) obj.distance = fields.distance;
+  if (fields.status) obj.status = fields.status;
+  if (fields.date) obj.date = fields.date;
+  if (fields.nameRun) obj.nameRun = fields.nameRun;
   return obj;
 };
 Service.prototype.createRunFields = async function({fields, file, id}) {
@@ -97,6 +117,25 @@ Service.prototype.createProfile = async function(data) {
   return profile;
 };
 
+Service.prototype.paidBookedRun = async function(user_id, run_id) {
+  const profile = await this.findProfileById(user_id);
+  const {bookedRuns} = profile;
+  const updateIndex = bookedRuns.map(run => run.id).indexOf(run_id);
+  bookedRuns[updateIndex].status = 'paid';
+  const updatedProfile = await this.model.updateProfile(profile);
+
+  if (isEmpty(updatedProfile)) {
+    throw new CustomError(
+      'paidBookedRun',
+      'Profile Not Updated For This User',
+      {
+        noprofile: 'Хм , обновить не вышло',
+      },
+    );
+  }
+  return updatedProfile;
+};
+
 Service.prototype.addRun = async function(data, id) {
   const profile = await this.findProfileById(id);
   const {runs} = profile;
@@ -107,6 +146,19 @@ Service.prototype.addRun = async function(data, id) {
 
   if (isEmpty(updatedProfile)) {
     throw new CustomError('addRun', 'Profile Not Updated For This User', {
+      noprofile: 'Хм , обновить не вышло',
+    });
+  }
+  return updatedProfile;
+};
+Service.prototype.addBookedRun = async function(data, id) {
+  const profile = await this.findProfileById(id);
+  const {bookedRuns} = profile;
+  bookedRuns.push(data);
+  const updatedProfile = await this.model.updateProfile(profile);
+
+  if (isEmpty(updatedProfile)) {
+    throw new CustomError('addBookedRun', 'Profile Not Updated For This User', {
       noprofile: 'Хм , обновить не вышло',
     });
   }
@@ -144,6 +196,24 @@ Service.prototype.deleteRun = async function({user_id, run_id}) {
     throw new CustomError('deleteRun', 'Profile Not Updated For This User', {
       noprofile: 'Хм , обновить не вышло',
     });
+  }
+  return updatedProfile;
+};
+Service.prototype.deleteBookedRun = async function({user_id, run_id}) {
+  const profile = await this.findProfileById(user_id);
+  const {bookedRuns} = profile;
+  const removeIndex = bookedRuns.map(run => run.id).indexOf(run_id);
+  bookedRuns.splice(removeIndex, 1);
+  const updatedProfile = await this.model.updateProfile(profile);
+
+  if (isEmpty(updatedProfile)) {
+    throw new CustomError(
+      'deleteBookedRun',
+      'Profile Not Updated For This User',
+      {
+        noprofile: 'Хм , обновить не вышло',
+      },
+    );
   }
   return updatedProfile;
 };

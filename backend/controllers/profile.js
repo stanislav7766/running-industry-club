@@ -1,6 +1,11 @@
 const {errorHandler, sendBadRequest} = require('../tools/errorHandler');
 const {OK} = require('../constants/http-status-code');
-const {bodyFilter, PROFILE_FIELDS, RUN_FIELDS} = require('../constants/body');
+const {
+  bodyFilter,
+  PROFILE_FIELDS,
+  RUN_FIELDS,
+  BOOKED_RUN_FIELDS,
+} = require('../constants/body');
 
 function Controller(service) {
   this.service = service;
@@ -8,7 +13,10 @@ function Controller(service) {
   this.getCurrentProfile = this.getCurrentProfile.bind(this);
   this.getCurrentBookedRuns = this.getCurrentBookedRuns.bind(this);
   this.setRun = this.setRun.bind(this);
+  this.setBookedRun = this.setBookedRun.bind(this);
   this.deleteRun = this.deleteRun.bind(this);
+  this.deleteBookedRun = this.deleteBookedRun.bind(this);
+  this.paidBookedRun = this.paidBookedRun.bind(this);
   this.deleteAccount = this.deleteAccount.bind(this);
 }
 Controller.prototype.setProfile = async function(req, res) {
@@ -105,6 +113,63 @@ Controller.prototype.deleteRun = async function(req, res) {
     errorHandler(error, () => sendBadRequest(res, error.errors));
   }
 };
+Controller.prototype.deleteBookedRun = async function(req, res) {
+  try {
+    const {
+      user: {id},
+      params: {run_id},
+    } = req;
+
+    const updatedProfile = await this.service.deleteBookedRun({
+      user_id: id,
+      run_id,
+    });
+    res
+      .status(OK)
+      .json(updatedProfile)
+      .end();
+  } catch (error) {
+    errorHandler(error, () => sendBadRequest(res, error.errors));
+  }
+};
+//disscuss logic
+Controller.prototype.setBookedRun = async function(req, res) {
+  try {
+    const {
+      user: {id},
+    } = req;
+    const fields = bodyFilter(req.body, BOOKED_RUN_FIELDS);
+    await this.service.checkUserBookedRun(fields);
+    const bookedRunFields = await this.service.createBookedRunFields({
+      fields,
+    });
+
+    const updatedProfile = await this.service.addBookedRun(bookedRunFields, id);
+    res
+      .status(OK)
+      .json(updatedProfile)
+      .end();
+  } catch (error) {
+    errorHandler(error, () => sendBadRequest(res, error.errors));
+  }
+};
+
+Controller.prototype.paidBookedRun = async function(req, res) {
+  try {
+    const {
+      user: {id},
+      params: {run_id},
+    } = req;
+    const updatedProfile = await this.service.paidBookedRun(id, run_id);
+    res
+      .status(OK)
+      .json(updatedProfile)
+      .end();
+  } catch (error) {
+    errorHandler(error, () => sendBadRequest(res, error.errors));
+  }
+};
+
 Controller.prototype.deleteAccount = async function(req, res) {
   try {
     const {
