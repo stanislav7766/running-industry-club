@@ -1,0 +1,9 @@
+.card-body {
+  max-height: 135px;
+  min-height: 135px;
+}
+.card-text,
+.card-title {
+  text-decoration: none !important;
+  color: black !important;
+}

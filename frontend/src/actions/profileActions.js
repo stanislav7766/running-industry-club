@@ -1,7 +1,7 @@
 import axios from 'axios';
 import setAuthToken from '../utils/setAuthToken';
 import { setCurrentUser } from './authActions';
-import isEmpty from '../components/validation/isEmpty';
+import isEmpty from '../utils/isEmpty';
 
 export const deleteAccount = () => async dispatch => {
   if (window.confirm('Are you sure? This can Not be undone!'))
@@ -86,11 +86,7 @@ export const setError = () => ({
   payload: {}
 });
 
-export const addRun = (
-  runData,
-  history,
-  previewFile = null
-) => async dispatch => {
+export const addRun = (runData, history, previewFile) => async dispatch => {
   const bodyFormData = new FormData();
   Object.keys(runData).forEach(prop => bodyFormData.set(prop, runData[prop]));
   previewFile && bodyFormData.append('preview', previewFile);

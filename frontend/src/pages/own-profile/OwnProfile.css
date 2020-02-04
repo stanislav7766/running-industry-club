@@ -1,0 +1,19 @@
+.own-profile {
+  width: 100%;
+}
+.own-profile-image {
+  background-image: url('../../assets/main-profile.jpg');
+}
+.mb-0 {
+  margin-bottom: 0px;
+}
+@media screen and (max-width: 912px) {
+  .own-profile-image {
+    height: 290px !important;
+  }
+
+  .card-body {
+    max-height: 170px;
+    min-height: 170px;
+  }
+}

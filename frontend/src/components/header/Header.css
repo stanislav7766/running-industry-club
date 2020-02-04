@@ -1,0 +1,30 @@
+.logo-header {
+  margin-right: 10px;
+  height: 40px;
+  width: 40px;
+}
+
+.navbar-nav {
+  text-align: center !important;
+}
+.navbar-nav .dropdown-menu {
+  background: none;
+  border: none;
+  text-align: center !important;
+}
+
+.dropdown .dropdown-menu {
+  max-height: 0;
+  -webkit-transition: 500ms;
+  -moz-transition: 500ms;
+  -o-transition: 500ms;
+  transition: 500ms;
+  display: block;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.dropdown.show .dropdown-menu {
+  max-height: 300px;
+  opacity: 1;
+}

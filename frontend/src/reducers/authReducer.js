@@ -1,4 +1,4 @@
-import isEmpty from '../components/validation/isEmpty';
+import isEmpty from '../utils/isEmpty';
 
 const initialState = {
   isAuthenticated: false,

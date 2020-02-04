@@ -1,0 +1,13 @@
+.register {
+  background-image: url('../../assets/register-bg.jpg');
+  height: 100vh;
+  width: 100%;
+}
+
+@media screen and (max-width: 767px) {
+  .register {
+    background-position-y: bottom;
+    background-position-x: 60%;
+    background-size: 300%;
+  }
+}

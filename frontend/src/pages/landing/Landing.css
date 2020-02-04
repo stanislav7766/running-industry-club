@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css?family=Dancing+Script&display=swap');
+.landing {
+  width: 100%;
+}
+
+.landing-image {
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)),
+    url('../../assets/main-landing.jpg');
+}
+
+.inclinedText {
+  font-family: 'Dancing Script';
+  font-size: 1.9em !important;
+}
+
+@media screen and (max-width: 767px) {
+  .subHeaderText {
+    font-size: 1em;
+    text-align: center;
+  }
+  .landing-image {
+    height: 290px !important;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .subHeaderText {
+    font-size: 1.2em;
+    text-align: center;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .subHeaderText {
+    font-size: 1.4em;
+    text-align: center;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .subHeaderText {
+    font-size: 1.5em;
+    text-align: center;
+  }
+}

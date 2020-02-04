@@ -15,6 +15,7 @@ const TextFieldGroup = ({
     <input
       type={type}
       className={`form-control ${error && 'is-invalid'}`}
+      autoComplete={`${type === 'password' && 'new-password'}`}
       placeholder={placeholder}
       name={name}
       value={value}

@@ -10,8 +10,8 @@ body {
   max-width: 100%;
   margin: 0;
   padding: 0;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   position: relative;
   min-height: 100%;
   overflow-x: hidden;
@@ -87,6 +87,7 @@ img {
 .main-image-template {
   background-position: center center;
   background-size: cover;
+  background-repeat: no-repeat;
   overflow: auto;
   width: 100%;
   animation: fadein 0.7s;
@@ -96,19 +97,18 @@ img {
 }
 
 .booked-runs {
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.3)),
-    url('./img/profile2.jpg');
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 100%;
-  overflow: auto;
-  position: fixed;
+  overflow-y: hidden;
+  background-image: url('./assets/booking-run-bg.jpg');
+  height: 100vh;
   width: 100%;
-  animation: fadein 0.7s;
-  -moz-animation: fadein 0.7s; /* Firefox */
-  -webkit-animation: fadein 0.7s; /* Safari and Chrome */
-  -o-animation: fadein 0.7s; /* Opera */
+}
+
+@media screen and (max-width: 767px) {
+  .booked-runs {
+    background-position-y: top;
+    background-position-x: 70%;
+    background-size: 300%;
+  }
 }
 
 .cn {
@@ -127,9 +127,18 @@ img {
   margin-bottom: 50px;
 }
 
+.bg-blue,
+.bg-blue:focus,
+.bg-blue:active {
+  outline: 0;
+  box-shadow: none;
+  background-color: #3f51b5;
+  border-color: #3f51b5;
+}
+
 .light-overlay {
   background-color: rgba(15, 15, 15, 0.425);
-  min-height: 100%;
+  min-height: 100vh;
   top: 0;
   left: 0;
   overflow: hidden;
