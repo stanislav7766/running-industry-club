@@ -22,14 +22,6 @@ img {
   max-width: 100%;
   height: auto;
 }
-.centerImg {
-  margin-top: 12%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-  max-width: 100%;
-}
 
 @keyframes fadein {
   from {
@@ -64,24 +56,8 @@ img {
   }
 }
 
-.pad-x {
-  padding-right: 0px;
-  padding-left: 0px;
-}
 #map {
   background-color: black !important;
-}
-#map_canvas {
-  height: 400px;
-  width: 500px;
-}
-#myCanvas {
-  background-color: black;
-  height: 100px;
-  width: 100px;
-}
-.content {
-  margin-top: -50px;
 }
 
 .main-image-template {
@@ -96,33 +72,10 @@ img {
   -o-animation: fadein 0.7s;
 }
 
-.booked-runs {
-  overflow-y: hidden;
-  background-image: url('./assets/booking-run-bg.jpg');
-  height: 100vh;
-  width: 100%;
-}
-
-@media screen and (max-width: 767px) {
-  .booked-runs {
-    background-position-y: top;
-    background-position-x: 70%;
-    background-size: 300%;
-  }
-}
-
-.cn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: auto;
-}
 .mt-150 {
   margin-top: 150px;
 }
-.mt-100 {
-  margin-top: 100px;
-}
+
 .mb-50 {
   margin-bottom: 50px;
 }
@@ -143,7 +96,6 @@ img {
   left: 0;
   overflow: hidden;
   width: 100%;
-  height: auto;
 }
 #canvas {
   width: 10px;
@@ -162,26 +114,6 @@ img {
   padding: 0;
   margin: 20px auto;
   transition: all 0.25s ease-in-out;
-}
-
-tr:nth-child(n + 4):nth-child(-n + 7) > th:nth-child(n + 5):nth-child(-n + 6),
-tr:nth-child(n + 5):nth-child(-n + 7) > th:nth-child(n + 4):nth-child(-n + 7),
-tr:nth-child(n + 6):nth-child(-n + 7) > th:nth-child(n + 3):nth-child(-n + 8),
-tr:nth-child(n + 7):nth-child(-n + 7) > th:nth-child(n + 2):nth-child(-n + 9) {
-  background-color: #3d6bce;
-}
-.Math-sqrt {
-  display: inline;
-}
-.Math-sqrt::after {
-  content: '\221A';
-}
-.Math-sqrt:hover {
-  visibility: hidden;
-}
-
-.fontSize {
-  font-size: 40px;
 }
 
 .widthCard {

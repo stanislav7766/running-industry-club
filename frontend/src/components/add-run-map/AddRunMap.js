@@ -14,6 +14,7 @@ const AddRunMap = ({ mapStyle, handleSetDistance, handleSetPreview }) => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_URL,
     libraries
   });
+  const GoogleMaps = isLoaded && window.google.maps;
 
   useEffect(() => {
     const scrollToMap = window.document.getElementById('scroll-to-map');
@@ -23,7 +24,7 @@ const AddRunMap = ({ mapStyle, handleSetDistance, handleSetPreview }) => {
   const RenderMap = () => {
     const fromLatLngToPoint = (latLng, map) => {
       const worldPoint = map.getProjection().fromLatLngToPoint(latLng);
-      return new window.google.maps.Point(worldPoint.x, worldPoint.y);
+      return new GoogleMaps.Point(worldPoint.x, worldPoint.y);
     };
     const getPreviewRun = (tempCoords, value) => {
       const canvas = document.getElementById('canvas');
@@ -94,9 +95,9 @@ const AddRunMap = ({ mapStyle, handleSetDistance, handleSetPreview }) => {
           (acc, obj, index, array) =>
             array.length !== index + 1
               ? (acc +=
-                  window.google.maps.geometry.spherical.computeDistanceBetween(
-                    new window.google.maps.LatLng(obj.lat, obj.lng),
-                    new window.google.maps.LatLng(
+                  GoogleMaps.geometry.spherical.computeDistanceBetween(
+                    new GoogleMaps.LatLng(obj.lat, obj.lng),
+                    new GoogleMaps.LatLng(
                       array[index + 1].lat,
                       array[index + 1].lng
                     )
@@ -117,7 +118,7 @@ const AddRunMap = ({ mapStyle, handleSetDistance, handleSetPreview }) => {
         <GoogleMap
           options={{
             zoomControlOptions: {
-              position: window.google.maps.ControlPosition.RIGHT_CENTER
+              position: GoogleMaps.ControlPosition.RIGHT_CENTER
             }
           }}
           id="map"
@@ -131,8 +132,8 @@ const AddRunMap = ({ mapStyle, handleSetDistance, handleSetPreview }) => {
             options={{
               drawingControl: true,
               drawingControlOptions: {
-                position: window.google.maps.ControlPosition.RIGHT_CENTER,
-                drawingModes: [window.google.maps.drawing.OverlayType.POLYLINE]
+                position: GoogleMaps.ControlPosition.RIGHT_CENTER,
+                drawingModes: [GoogleMaps.drawing.OverlayType.POLYLINE]
               }
             }}
           />

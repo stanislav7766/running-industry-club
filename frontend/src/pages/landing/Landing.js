@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useMemo } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import LandingCard from '../../components/landing-card';
 import nrcCard from '../../assets/landing-register-card.jpg';
@@ -72,15 +72,11 @@ const Landing = () => {
       <Container fluid={true}>
         <Row>
           <Col className="px-0" xs={12}>
-            {useMemo(
-              () => (
-                <div
-                  className="main-image-template landing-image"
-                  style={styleLandingImage}
-                />
-              ),
-              [sizeLandingImage.width]
-            )}
+            <div
+              className="main-image-template landing-image"
+              style={styleLandingImage}
+            />
+
             <h1 className="text-center font-weight-bold">
               RUNNING INDUSTRY CLUB
             </h1>

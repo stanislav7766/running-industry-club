@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -11,15 +11,14 @@ import {
 
 import BookingRunTable from '../../components/booking-run-table';
 import BookingRunForm from '../../components/booking-run-form';
+import './BookingRun.css';
+
 const BookingRun = props => {
   const [isSubmited, setIsSubmitted] = useState(false);
-  const { user } = props.auth;
-  const { profile } = props.profile;
-
-  useEffect(() => {
-    const fetchCurrentProfile = async () => await props.getCurrentProfile();
-    fetchCurrentProfile();
-  }, []);
+  const {
+    auth: { user },
+    profile: { profile }
+  } = props;
 
   const changeIsSubmited = () => setIsSubmitted(!isSubmited);
 
@@ -33,6 +32,7 @@ const BookingRun = props => {
         isSubmited={isSubmited}
         getCurrentProfile={props.getCurrentProfile}
         profile={profile}
+        propsErrors={props.errors}
         deleteBookedRun={props.deleteBookedRun}
         paidBookedRun={props.paidBookedRun}
       />
@@ -43,36 +43,32 @@ const BookingRun = props => {
         <BookingRunForm
           changeIsSubmited={changeIsSubmited}
           propsErrors={props.errors}
-          resetErrors={props.resetErrors}
-          location={props.location}
           bookingRun={props.bookingRun}
         />
       </div>
     </div>
   );
-  return useMemo(
-    () => (
-      <div className="booked-runs main-image-template">
-        <div className="light-overlay">
-          <div className="container">
-            <div className="row">
-              <div className="col-10 mx-auto">
-                <a href="/own-profile" className="btn btn-outline-dark">
-                  Вернуться
-                </a>
-                {RunsContent}
-              </div>
+  return (
+    <div className="booking-run main-image-template">
+      <div className="light-overlay">
+        <div className="container">
+          <div className="row">
+            <div className="col-10 mx-auto">
+              <a href="/own-profile" className="btn btn-outline-dark">
+                Вернуться
+              </a>
+              {RunsContent}
             </div>
           </div>
         </div>
       </div>
-    ),
-    [isSubmited, profile]
+    </div>
   );
 };
 
 BookingRun.propTypes = {
-  auth: PropTypes.object.isRequired,
+  user: PropTypes.object,
+  profile: PropTypes.object,
   errors: PropTypes.object.isRequired,
   getCurrentProfile: PropTypes.func.isRequired,
   deleteBookedRun: PropTypes.func.isRequired,

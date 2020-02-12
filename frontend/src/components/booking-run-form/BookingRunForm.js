@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import SelectListGroup from '../common/SelectListGroup';
@@ -64,21 +64,15 @@ const defaultFields = [
   }
 ];
 
-const BookingRunForm = ({
-  propsErrors,
-  changeIsSubmited,
-  resetErrors,
-  location,
-  bookingRun
-}) => {
+const BookingRunForm = ({ propsErrors, changeIsSubmited, bookingRun }) => {
   const [inputs, setInputs] = useState(defaultFields);
   const [errors, setErrors] = useState({});
 
   const resetForm = () => setInputs(defaultFields);
 
-  useEffect(() => propsErrors !== errors && setErrors(propsErrors), [
-    propsErrors
-  ]);
+  useEffect(() => {
+    propsErrors !== errors && setErrors(propsErrors);
+  }, [propsErrors, errors]);
   const onChange = e => {
     const value = e.target.value;
     const name = e.target.name;
@@ -114,10 +108,9 @@ const BookingRunForm = ({
     }
   };
 
-  useMemo(() => resetErrors(), [location.pathname]);
-
   const onSubmit = async e => {
     e.preventDefault();
+
     const userData = prepareData(inputs);
 
     await bookingRun(userData);
@@ -135,7 +128,7 @@ const BookingRunForm = ({
 };
 
 BookingRunForm.propTypes = {
-  resetErrors: PropTypes.func.isRequired,
+  changeIsSubmited: PropTypes.func.isRequired,
   bookingRun: PropTypes.func.isRequired,
   propsErrors: PropTypes.object.isRequired
 };

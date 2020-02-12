@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { resetErrors } from '../../actions/profileActions';
 import './Login.css';
 
 const Login = props => {
+  const { errors: propsErrors, resetErrors } = props;
   const [heightForm, setHeightForm] = useState(0);
   const [inputs, setInputs] = useState({
     email: '',
@@ -32,11 +33,20 @@ const Login = props => {
     []
   );
 
-  useEffect(() => props.errors !== errors && setErrors(props.errors), [
-    props.errors
-  ]);
+  useEffect(() => {
+    propsErrors !== errors && setErrors(propsErrors);
+  }, [propsErrors, errors]);
 
-  useMemo(() => props.resetErrors(), [props.location.pathname]);
+  const unMount = useCallback(() => {
+    resetErrors();
+  }, [resetErrors]);
+
+  useEffect(
+    () => () => {
+      unMount();
+    },
+    [unMount]
+  );
 
   return (
     <div className="login main-image-template">

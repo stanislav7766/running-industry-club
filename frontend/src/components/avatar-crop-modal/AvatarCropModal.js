@@ -22,15 +22,14 @@ const AvatarCropModal = ({
     (_, croppedAreaPixels) => setCroppedAreaPixels(croppedAreaPixels),
     []
   );
-  const createCroppedImage = useCallback(async () => {
+  const createCroppedImage = async () => {
     try {
       setCroppedAvatar(await getCroppedImg(image, croppedAreaPixels, rotation));
       setShowModaL(!showModal);
     } catch (e) {
       console.error(e);
     }
-  }, [croppedAreaPixels, rotation]);
-
+  };
   return (
     <Modal
       centered

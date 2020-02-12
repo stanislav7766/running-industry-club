@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Col, Row, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -48,6 +48,7 @@ const defaultFields = [
 ];
 
 const AddRun = props => {
+  const { errors: propsErrors, resetErrors } = props;
   const [inputs, setInputs] = useState(defaultFields);
   const [previewFile, setPreviewFile] = useState(null);
   const [errors, setErrors] = useState({});
@@ -99,26 +100,35 @@ const AddRun = props => {
   };
 
   const heightFormRef = useCallback(
-    node => node && setHeightForm(node.getBoundingClientRect().height),
-    [errors]
+    node =>
+      node &&
+      propsErrors === errors &&
+      setHeightForm(node.getBoundingClientRect().height),
+    [errors, propsErrors]
   );
 
-  useEffect(() => props.errors !== errors && setErrors(props.errors), [
-    props.errors
-  ]);
+  useEffect(() => {
+    propsErrors !== errors && setErrors(propsErrors);
+  }, [propsErrors, errors]);
 
-  useMemo(() => props.resetErrors(), [props.location.pathname]);
+  const unMount = useCallback(() => {
+    resetErrors();
+  }, [resetErrors]);
 
-  const MemoMap = useMemo(
-    () => (
-      <AddRunMap
-        mapStyle={mapStyle}
-        handleSetPreview={handleSetPreview}
-        handleSetDistance={handleSetDistance}
-      />
-    ),
-    [previewFile]
+  useEffect(
+    () => () => {
+      unMount();
+    },
+    [unMount]
   );
+  const MemoMap = (
+    <AddRunMap
+      mapStyle={mapStyle}
+      handleSetPreview={handleSetPreview}
+      handleSetDistance={handleSetDistance}
+    />
+  );
+
   const onSubmit = e => {
     e.preventDefault();
     const userData = prepareData(inputs);

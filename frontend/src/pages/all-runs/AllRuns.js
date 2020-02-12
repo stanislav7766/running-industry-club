@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -8,13 +8,15 @@ import './AllRuns.css';
 import { Container, Row } from 'react-bootstrap';
 import RunCard from '../../components/run-card';
 
-const AllRuns = props => {
-  const { profile, loading } = props.profile;
+const AllRuns = ({ getCurrentProfile, profile, loading }) => {
+  const fetchCurrentProfile = useCallback(
+    async () => await getCurrentProfile(),
+    [getCurrentProfile]
+  );
 
   useEffect(() => {
-    const fetchCurrentProfile = async () => await props.getCurrentProfile();
     fetchCurrentProfile();
-  }, []);
+  }, [fetchCurrentProfile]);
 
   const runsSorted =
     profile && profile.runs
@@ -54,11 +56,11 @@ const AllRuns = props => {
 };
 AllRuns.propTypes = {
   getCurrentProfile: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  profile: PropTypes.object.isRequired
+  profile: PropTypes.object,
+  loading: PropTypes.bool
 };
 const mapStateToProps = state => ({
-  profile: state.profile,
-  auth: state.auth
+  loading: state.profile.loading,
+  profile: state.profile.profile
 });
 export default connect(mapStateToProps, { getCurrentProfile })(AllRuns);

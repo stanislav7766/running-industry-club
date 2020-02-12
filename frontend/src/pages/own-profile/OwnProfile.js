@@ -2,8 +2,8 @@ import React, {
   Fragment,
   useState,
   useEffect,
-  useLayoutEffect,
-  useMemo
+  useCallback,
+  useLayoutEffect
 } from 'react';
 import PropTypes from 'prop-types';
 import { logoutUser } from '../../actions/authActions';
@@ -29,8 +29,11 @@ const OwnProfile = props => {
     height: window.innerWidth / 4
   });
 
-  const { user } = props.auth;
-  const { profile, loading } = props.profile;
+  const {
+    auth: { user },
+    profile: { profile, loading },
+    getCurrentProfile
+  } = props;
   const isProfileEmpty = !!(profile && Object.keys(profile).length === 0);
   const isRunsEmpty = !!(profile && Object.keys(profile.runs).length === 0);
   const styleDashboardImage = {
@@ -39,10 +42,14 @@ const OwnProfile = props => {
     width: `${sizeDashboardImage.width}px`,
     height: `${sizeDashboardImage.height}px`
   };
+  const fetchCurrentProfile = useCallback(
+    async () => await getCurrentProfile(),
+    [getCurrentProfile]
+  );
+
   useEffect(() => {
-    const fetchCurrentProfile = async () => await props.getCurrentProfile();
     fetchCurrentProfile();
-  }, []);
+  }, [fetchCurrentProfile]);
 
   useLayoutEffect(() => {
     const updateSize = () =>
@@ -152,56 +159,53 @@ const OwnProfile = props => {
       </Fragment>
     );
 
-  return useMemo(
-    () => (
-      <div className="own-profile">
-        <Container fluid={true}>
-          <Row>
-            <Col className="px-0" xs={12}>
-              <div
-                className="own-profile-image main-image-template"
-                style={styleDashboardImage}
-              />
-            </Col>
-            <Container fluid={true}>
-              {loading ? (
-                <Spinner />
-              ) : (
-                <Row
-                  style={{
-                    alignItems: 'center'
-                  }}
-                >
-                  <Col xs={10} sm={10} md={4} className="mx-auto">
-                    {totalsContent}
-                  </Col>
-                  <Col xs={10} sm={10} md={4} className="mx-auto">
-                    {bioContent}
-                  </Col>
-                  <Col xs={10} className="mx-auto">
-                    <div style={{ marginTop: `${indent}px` }} />
-                    {profile && !isProfileEmpty && (
-                      <RunsTable
-                        deleteRun={props.deleteRun}
-                        runs={profile.runs}
-                      />
-                    )}
-                    <Button
-                      variant="danger"
-                      onClick={onDeleteClick}
-                      className="mt-4 mb-4"
-                    >
-                      Удалить аккаунт
-                    </Button>
-                  </Col>
-                </Row>
-              )}
-            </Container>
-          </Row>
-        </Container>
-      </div>
-    ),
-    [props.profile, sizeDashboardImage]
+  return (
+    <div className="own-profile">
+      <Container fluid={true}>
+        <Row>
+          <Col className="px-0" xs={12}>
+            <div
+              className="own-profile-image main-image-template"
+              style={styleDashboardImage}
+            />
+          </Col>
+          <Container fluid={true}>
+            {loading ? (
+              <Spinner />
+            ) : (
+              <Row
+                style={{
+                  alignItems: 'center'
+                }}
+              >
+                <Col xs={10} sm={10} md={4} className="mx-auto">
+                  {totalsContent}
+                </Col>
+                <Col xs={10} sm={10} md={4} className="mx-auto">
+                  {bioContent}
+                </Col>
+                <Col xs={10} className="mx-auto">
+                  <div style={{ marginTop: `${indent}px` }} />
+                  {profile && !isProfileEmpty && (
+                    <RunsTable
+                      deleteRun={props.deleteRun}
+                      runs={profile.runs}
+                    />
+                  )}
+                  <Button
+                    variant="danger"
+                    onClick={onDeleteClick}
+                    className="mt-4 mb-4"
+                  >
+                    Удалить аккаунт
+                  </Button>
+                </Col>
+              </Row>
+            )}
+          </Container>
+        </Row>
+      </Container>
+    </div>
   );
 };
 OwnProfile.propTypes = {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -35,6 +35,8 @@ const defaultFields = [
 ];
 
 const Register = props => {
+  const { errors: propsErrors, resetErrors } = props;
+
   const [heightForm, setHeightForm] = useState(0);
   const [inputs, setInputs] = useState(defaultFields);
   const [errors, setErrors] = useState({});
@@ -77,11 +79,19 @@ const Register = props => {
     node => node && setHeightForm(node.getBoundingClientRect().height),
     []
   );
-  useEffect(() => props.errors !== errors && setErrors(props.errors), [
-    props.errors
-  ]);
-  useMemo(() => props.resetErrors(), [props.location.pathname]);
+  useEffect(() => {
+    propsErrors !== errors && setErrors(propsErrors);
+  }, [propsErrors, errors]);
+  const unMount = useCallback(() => {
+    resetErrors();
+  }, [resetErrors]);
 
+  useEffect(
+    () => () => {
+      unMount();
+    },
+    [unMount]
+  );
   return (
     <div className="register main-image-template">
       <div className="light-overlay">

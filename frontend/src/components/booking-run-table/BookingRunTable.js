@@ -1,10 +1,14 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, useCallback, Fragment } from 'react';
 import { Button } from 'react-bootstrap';
 import Spinner from '../common/Spinner';
 import RunStatus from '../run-status';
 import PropTypes from 'prop-types';
+import isEmpty from '../../utils/isEmpty';
+
+//TODO: check re-renders, fix date type
 
 const BookingRunTable = ({
+  propsErrors,
   profile,
   isSubmited,
   getCurrentProfile,
@@ -14,9 +18,13 @@ const BookingRunTable = ({
   const onDeleteClick = run_id => deleteBookedRun(run_id);
   const onPaidClick = run_id => paidBookedRun(run_id);
 
+  const fetchProfile = useCallback(async () => await getCurrentProfile(), [
+    getCurrentProfile
+  ]);
+
   useEffect(() => {
-    getCurrentProfile();
-  }, [isSubmited]);
+    isEmpty(propsErrors) && fetchProfile();
+  }, [isSubmited, fetchProfile, propsErrors]);
 
   const BookedRuns =
     profile &&
@@ -65,6 +73,8 @@ BookingRunTable.propTypes = {
   paidBookedRun: PropTypes.func.isRequired,
   deleteBookedRun: PropTypes.func.isRequired,
   getCurrentProfile: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired
+  profile: PropTypes.object,
+  propsErrors: PropTypes.object,
+  isSubmited: PropTypes.bool.isRequired
 };
 export default BookingRunTable;

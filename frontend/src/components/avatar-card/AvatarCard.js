@@ -11,6 +11,7 @@ const AvatarCard = ({ croppedAvatar, setCroppedAvatar, nickname }) => {
   const [showModal, setShowModal] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [image, setImage] = useState(null);
+  const avatarDims = { width: '200px', height: '200px', borderRadius: '100%' };
 
   const onFileChange = async e => {
     const {
@@ -60,17 +61,14 @@ const AvatarCard = ({ croppedAvatar, setCroppedAvatar, nickname }) => {
         {croppedAvatar ? (
           <img
             className="mx-auto mt-4"
-            style={{ width: '200px', height: '200px', borderRadius: '100%' }}
+            style={avatarDims}
             src={croppedAvatar}
             alt=""
           ></img>
         ) : (
           <IconContext.Provider
             value={{
-              style: {
-                width: '200px',
-                height: '200px'
-              }
+              style: avatarDims
             }}
           >
             <div className="mx-auto mt-4">

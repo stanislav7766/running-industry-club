@@ -1,0 +1,14 @@
+.booking-run {
+  overflow-y: hidden;
+  background-image: url('../../assets/booking-run-bg.jpg');
+  height: 100vh;
+  width: 100%;
+}
+
+@media screen and (max-width: 767px) {
+  .booking-run {
+    background-position-y: top;
+    background-position-x: 70%;
+    background-size: 300%;
+  }
+}

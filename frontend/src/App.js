@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import dotenv from 'dotenv';
@@ -18,27 +18,31 @@ import Footer from './components/footer';
 import PrivateRoute from './components/common/PrivateRoute';
 import store from './store';
 import { setCurrentUser, logoutUser } from './actions/authActions';
+import { clearCurrentProfile } from './actions/profileActions';
 import setAuthToken from './utils/setAuthToken';
 import './App.css';
 
 dotenv.config();
 
-if (localStorage.jwtToken) {
-  setAuthToken(localStorage.jwtToken);
-  const decoded = jwt_decode(localStorage.jwtToken);
-  store.dispatch(setCurrentUser(decoded));
+(function setToken() {
+  const { jwtToken } = localStorage;
+  if (jwtToken) {
+    setAuthToken(jwtToken);
+    const decoded = jwt_decode(jwtToken);
+    store.dispatch(setCurrentUser(decoded));
 
-  const currentTime = Date.now() / 1000;
-  if (decoded.exp < currentTime) {
-    store.dispatch(logoutUser());
-    // store.dispatch(clearCurrentProfile());
-    window.location.href = '/login';
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp < currentTime) {
+      store.dispatch(logoutUser());
+      store.dispatch(clearCurrentProfile());
+      window.location.href = '/login';
+    }
   }
-}
+})();
 
 const App = () => (
   <Provider store={store}>
-    <Router>
+    <BrowserRouter>
       <Fragment>
         <Header />
         <Fragment>
@@ -62,7 +66,7 @@ const App = () => (
         </Fragment>
         <Footer />
       </Fragment>
-    </Router>
+    </BrowserRouter>
   </Provider>
 );
 

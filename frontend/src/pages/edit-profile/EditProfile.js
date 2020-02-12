@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -71,28 +71,49 @@ const EditProfile = props => {
   });
   const [croppedAvatar, setCroppedAvatar] = useState(null);
 
-  const { profile, loading } = props;
+  const {
+    profile,
+    loading,
+    resetErrors,
+    getCurrentProfile,
+    errors: propsErrors
+  } = props;
   const isProfileEmpty = isEmpty(profile);
+  const fetchCurrentProfile = useCallback(
+    async () => await getCurrentProfile(),
+    [getCurrentProfile]
+  );
 
   useEffect(() => {
-    const fetchCurrentProfile = async () => await props.getCurrentProfile();
     fetchCurrentProfile();
-  }, []);
+  }, [fetchCurrentProfile]);
+
+  const unMount = useCallback(() => {
+    resetErrors();
+  }, [resetErrors]);
+
+  useEffect(
+    () => () => {
+      unMount();
+    },
+    [unMount]
+  );
+
+  const filingInputs = useCallback(() => {
+    if (!inputsMapped) {
+      setInputs(mapInputs(inputs, profile));
+      setSocialInputs(mapSocialInputs(socialInputs, profile));
+      setInputsMapped(true);
+    }
+  }, [inputsMapped, inputs, profile, socialInputs]);
 
   useEffect(() => {
-    if (!isProfileEmpty) {
-      !inputsMapped && setInputs(mapInputs(inputs, profile));
-      !inputsMapped && setSocialInputs(mapSocialInputs(socialInputs, profile));
-      !inputsMapped && setInputsMapped(true);
-      setErrors(props.errors);
-    }
-  }, [profile, props.errors]);
+    !isProfileEmpty && filingInputs();
+  }, [filingInputs, isProfileEmpty]);
 
-  useEffect(() => props.errors !== errors && setErrors(props.errors), [
-    props.errors
-  ]);
-
-  useMemo(() => props.resetErrors(), [props.location.pathname]);
+  useEffect(() => {
+    propsErrors !== errors && setErrors(propsErrors);
+  }, [propsErrors, errors]);
 
   const changeInput = (name, value, cb) =>
     cb(inputs => ({ ...inputs, [name]: value }));
