@@ -55,6 +55,7 @@ const EditProfile = props => {
   const [displaySocial, setDisplaySocial] = useState(false);
   const [errors, setErrors] = useState({});
   const [inputs, setInputs] = useState({
+    avatar: null,
     name: '',
     email: '',
     location: '',
@@ -125,7 +126,11 @@ const EditProfile = props => {
 
   const onSubmit = e => {
     e.preventDefault();
-    props.createProfile({ ...inputs, ...socialInputs }, props.history);
+    props.createProfile(
+      { ...inputs, ...socialInputs },
+      props.history,
+      croppedAvatar
+    );
   };
 
   const SocialInputs = (
@@ -183,7 +188,7 @@ const EditProfile = props => {
             <Col xs={10} md={6} className="mx-auto">
               {!isProfileEmpty && (
                 <AvatarCard
-                  nickname={profile.user.nickname}
+                  profile={profile}
                   croppedAvatar={croppedAvatar}
                   setCroppedAvatar={setCroppedAvatar}
                 />

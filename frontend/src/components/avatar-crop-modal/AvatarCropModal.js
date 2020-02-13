@@ -3,6 +3,7 @@ import { Modal, Button, Col, Row, Container } from 'react-bootstrap';
 import Cropper from 'react-easy-crop';
 import AdjustBar from '../adjust-bar';
 import getCroppedImg from '../../utils/cropImage';
+import dataURItoBlob from '../../utils/dataURLtoBlob';
 
 import './AvatarCropModal.css';
 
@@ -24,7 +25,12 @@ const AvatarCropModal = ({
   );
   const createCroppedImage = async () => {
     try {
-      setCroppedAvatar(await getCroppedImg(image, croppedAreaPixels, rotation));
+      const avatarBase64 = await getCroppedImg(
+        image,
+        croppedAreaPixels,
+        rotation
+      );
+      setCroppedAvatar(dataURItoBlob(avatarBase64));
       setShowModaL(!showModal);
     } catch (e) {
       console.error(e);

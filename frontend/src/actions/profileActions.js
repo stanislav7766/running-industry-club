@@ -1,22 +1,22 @@
 import axios from 'axios';
-import setAuthToken from '../utils/setAuthToken';
-import { setCurrentUser } from './authActions';
+import { logoutUser } from './authActions';
 import isEmpty from '../utils/isEmpty';
 
-export const deleteAccount = () => async dispatch => {
-  if (window.confirm('Are you sure? This can Not be undone!'))
+export const deleteAccount = history => async dispatch => {
+  if (!!window.confirm('Вы уверены, что хотите удалить аккаунт?')) {
     try {
+      history.push('/');
+
       await axios.delete('/api/profile');
       dispatch(clearCurrentProfile());
-      dispatch(setCurrentUser({}));
-      localStorage.removeItem('jwtToken');
-      setAuthToken(false);
+      dispatch(logoutUser());
     } catch (err) {
       dispatch({
         type: 'GET_ERRORS',
         payload: err.response.data
       });
     }
+  }
 };
 
 export const getProfiles = () => async dispatch => {
@@ -61,9 +61,44 @@ export const getProfileBooking = async () => {
   }
 };
 
-export const createProfile = (profileData, history) => async dispatch => {
+export const createProfile = (
+  profileData,
+  history,
+  avatar
+) => async dispatch => {
+  const bodyFormData = new FormData();
+  Object.keys(profileData).forEach(prop =>
+    bodyFormData.set(prop, profileData[prop])
+  );
+  avatar && bodyFormData.append('preview', avatar);
+
   try {
-    await axios.post('/api/profile', profileData);
+    await axios({
+      method: 'post',
+      url: '/api/profile',
+      data: bodyFormData,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    history.push('/own-profile');
+  } catch (err) {
+    dispatch({
+      type: 'GET_ERRORS',
+      payload: err.response.data
+    });
+  }
+};
+export const addRun = (runData, history, previewFile) => async dispatch => {
+  const bodyFormData = new FormData();
+  Object.keys(runData).forEach(prop => bodyFormData.set(prop, runData[prop]));
+  previewFile && bodyFormData.append('preview', previewFile);
+
+  try {
+    await axios({
+      method: 'post',
+      url: '/api/profile/runs',
+      data: bodyFormData,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
     history.push('/own-profile');
   } catch (err) {
     dispatch({
@@ -86,26 +121,6 @@ export const setError = () => ({
   payload: {}
 });
 
-export const addRun = (runData, history, previewFile) => async dispatch => {
-  const bodyFormData = new FormData();
-  Object.keys(runData).forEach(prop => bodyFormData.set(prop, runData[prop]));
-  previewFile && bodyFormData.append('preview', previewFile);
-
-  try {
-    await axios({
-      method: 'post',
-      url: '/api/profile/runs',
-      data: bodyFormData,
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
-    history.push('/own-profile');
-  } catch (err) {
-    dispatch({
-      type: 'GET_ERRORS',
-      payload: err.response.data
-    });
-  }
-};
 export const bookingRun = runData => async dispatch => {
   try {
     const res = await axios.post('/api/profile/run-booking', runData);

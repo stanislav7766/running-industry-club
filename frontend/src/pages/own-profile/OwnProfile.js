@@ -35,7 +35,12 @@ const OwnProfile = props => {
     getCurrentProfile
   } = props;
   const isProfileEmpty = !!(profile && Object.keys(profile).length === 0);
-  const isRunsEmpty = !!(profile && Object.keys(profile.runs).length === 0);
+
+  const isRunsEmpty = !!(
+    profile &&
+    profile.runs &&
+    Object.keys(profile.runs).length === 0
+  );
   const styleDashboardImage = {
     marginTop: `${indent}px`,
     marginBottom: `${indent}px`,
@@ -61,12 +66,10 @@ const OwnProfile = props => {
     return () => window.removeEventListener('resize', updateSize);
   }, []);
 
-  const onDeleteClick = () => {
-    props.deleteAccount();
-    props.logoutUser();
-    props.history.push('/');
+  const onDeleteClick = e => {
+    e.preventDefault();
+    props.deleteAccount(props.history);
   };
-
   const LinkToRuns = profile && (
     <Col xs={12}>
       <Link

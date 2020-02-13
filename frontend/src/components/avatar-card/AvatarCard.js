@@ -3,15 +3,20 @@ import { Card } from 'react-bootstrap';
 import { IconContext } from 'react-icons';
 import { FaUser } from 'react-icons/fa';
 import readFile from '../../utils/readFile';
+
 import AvatarCropModal from '../../components/avatar-crop-modal';
 
 import './AvatarCard.css';
 
-const AvatarCard = ({ croppedAvatar, setCroppedAvatar, nickname }) => {
+const AvatarCard = ({ croppedAvatar, setCroppedAvatar, profile }) => {
   const [showModal, setShowModal] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
   const [image, setImage] = useState(null);
   const avatarDims = { width: '200px', height: '200px', borderRadius: '100%' };
+  const {
+    avatar,
+    user: { nickname }
+  } = profile;
 
   const onFileChange = async e => {
     const {
@@ -62,7 +67,14 @@ const AvatarCard = ({ croppedAvatar, setCroppedAvatar, nickname }) => {
           <img
             className="mx-auto mt-4"
             style={avatarDims}
-            src={croppedAvatar}
+            src={URL.createObjectURL(croppedAvatar)}
+            alt=""
+          ></img>
+        ) : avatar ? (
+          <img
+            className="mx-auto mt-4"
+            style={avatarDims}
+            src={avatar.url}
             alt=""
           ></img>
         ) : (
