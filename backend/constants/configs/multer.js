@@ -1,6 +1,6 @@
 const multerConfig = {
   limits: {
-    fileSize: 1024 * 1024,
+    fileSize: 2048 * 2048,
   },
 };
 

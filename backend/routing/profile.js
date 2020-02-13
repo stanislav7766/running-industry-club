@@ -12,7 +12,7 @@ module.exports = ({
   paidBookedRun,
   deleteAccount,
 }) => {
-  router.post('/', jwtAuthenticate, setProfile);
+  router.post('/', jwtAuthenticate, parseImageUpload(), setProfile);
   router.get('/', jwtAuthenticate, getCurrentProfile);
   router.delete('/runs/:run_id', jwtAuthenticate, deleteRun);
   router.delete('/', jwtAuthenticate, deleteAccount);

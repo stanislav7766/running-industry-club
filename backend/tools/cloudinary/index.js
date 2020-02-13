@@ -2,16 +2,17 @@ const cloudinary = require('cloudinary').v2;
 const fetch = require('node-fetch');
 const {
   cloudinaryConfig,
+  cloudinaryFolders,
   cloudinaryOptions,
 } = require('../../constants/configs');
 
 cloudinary.config(cloudinaryConfig);
 
-const getFolderFetchLink = () =>
-  `https://${process.env.CLOUD_API_KEY}:${process.env.CLOUD_API_SECRET}@api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/folders/${process.env.CLOUDINARY_CLOUD_FOLDER}/${folder_name}`;
+const getFolderFetchLink = ({folder_name, type}) =>
+  `https://${process.env.CLOUD_API_KEY}:${process.env.CLOUD_API_SECRET}@api.cloudinary.com/v1_1/${process.env.CLOUD_NAME}/folders/${cloudinaryFolders[type]}/${folder_name}`;
 
-const uploadPreview = (file, folder) =>
-  uploadPreviewHelper(file, folder)
+const uploadPreview = ({file, folder_name, type}) =>
+  uploadPreviewHelper({file, folder_name, type})
     .then(result => ({
       url: result.url,
       public_id: result.public_id,
@@ -21,43 +22,71 @@ const uploadPreview = (file, folder) =>
       return err;
     });
 
-const uploadPreviewHelper = (image, folder) =>
+const uploadPreviewHelper = ({file, folder_name, type}) =>
   new Promise((resolve, reject) =>
     cloudinary.uploader
-      .upload_stream(cloudinaryOptions(folder), (err, res) =>
+      .upload_stream(cloudinaryOptions({folder_name, type}), (err, res) =>
         err ? reject(err) : resolve(res),
       )
-      .end(image.buffer),
+      .end(file.buffer),
   );
 
-const removeFolder = async folder_name =>
+const clearDirectory = async ({folder_name, type}) =>
   await new Promise((resolve, reject) => {
     cloudinary.api.delete_resources_by_prefix(
-      `${process.env.CLOUDINARY_CLOUD_FOLDER}/${folder_name}`,
+      `${cloudinaryFolders[type]}/${folder_name}`,
       error => {
         if (error) {
-          error.name = removeFolder.name;
+          error.name = clearDirectory.name;
           reject(error);
         }
-        fetch(getFolderFetchLink(), {
-          method: 'DELETE',
-        })
-          .then(res => res.json())
-          .then(res => res.deleted && resolve({success: true}))
-          .catch(err => {
-            err.name = removeFolder.name;
-            reject(err);
-          });
+        resolve({success: true});
       },
     );
   });
-const createFolder = async folder_name =>
+
+const isEmptyDirectory = async ({folder_name, type}) =>
   await new Promise((resolve, reject) => {
-    fetch(getFolderFetchLink(), {
+    cloudinary.api.resources(
+      {
+        type: 'upload',
+        prefix: `${cloudinaryFolders[type]}/${folder_name}`,
+      },
+      (error, result) => {
+        if (error) {
+          error.name = clearDirectory.name;
+          reject(error);
+        }
+        const {resources} = result;
+        resolve((Array.isArray(resources) && resources.length) > 0 ? 0 : 1);
+      },
+    );
+  });
+
+const removeFolder = async ({folder_name, type}) =>
+  await new Promise(async (resolve, reject) => {
+    try {
+      await clearDirectory({folder_name, type});
+      fetch(getFolderFetchLink({folder_name, type}), {
+        method: 'DELETE',
+      })
+        .then(res => res.json())
+        .then(res => res && res.deleted && resolve({success: true}))
+        .catch(err => {
+          err.name = removeFolder.name;
+          reject(err);
+        });
+    } catch (err) {
+      reject(err);
+    }
+  });
+const createFolder = async ({folder_name, type}) =>
+  await new Promise((resolve, reject) => {
+    fetch(getFolderFetchLink({folder_name, type}), {
       method: 'POST',
     })
       .then(res => res.json())
-      .then(res => res.success && resolve({success: true}))
+      .then(res => res && res.success && resolve({success: true}))
       .catch(err => {
         err.name = createFolder.name;
         reject(err);
@@ -79,4 +108,6 @@ module.exports = {
   removeImage,
   removeFolder,
   createFolder,
+  isEmptyDirectory,
+  clearDirectory,
 };

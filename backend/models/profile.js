@@ -19,6 +19,14 @@ const profileSchema = new Schema({
     type: String,
     required: true,
   },
+  avatar: {
+    url: {
+      type: String,
+    },
+    public_id: {
+      type: String,
+    },
+  },
   age: {
     type: String,
   },

@@ -21,13 +21,13 @@ function Controller(service) {
 }
 Controller.prototype.setProfile = async function(req, res) {
   try {
-    const {user} = req;
-    const fields = bodyFilter(req.body, PROFILE_FIELDS);
-
+    const {body, user, file} = req;
+    const fields = bodyFilter(body, PROFILE_FIELDS);
     await this.service.checkUserProfile(fields);
-    const profileFields = this.service.createProfileFields({
+    const profileFields = await this.service.createProfileFields({
       fields,
       user,
+      file,
     });
 
     const result = await this.service.createProfile(profileFields);
@@ -72,11 +72,12 @@ Controller.prototype.getCurrentBookedRuns = async function(req, res) {
 
 Controller.prototype.setRun = async function(req, res) {
   try {
-    const fields = bodyFilter(req.body, RUN_FIELDS);
     const {
+      body,
       user: {id},
       file,
     } = req;
+    const fields = bodyFilter(body, RUN_FIELDS);
     await this.service.checkUserRun(fields);
     const runFields = await this.service.createRunFields({
       fields,
@@ -136,9 +137,10 @@ Controller.prototype.deleteBookedRun = async function(req, res) {
 Controller.prototype.setBookedRun = async function(req, res) {
   try {
     const {
+      body,
       user: {id},
     } = req;
-    const fields = bodyFilter(req.body, BOOKED_RUN_FIELDS);
+    const fields = bodyFilter(body, BOOKED_RUN_FIELDS);
     await this.service.checkUserBookedRun(fields);
     const bookedRunFields = await this.service.createBookedRunFields({
       fields,

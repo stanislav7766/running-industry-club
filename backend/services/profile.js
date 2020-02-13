@@ -7,11 +7,14 @@ const {isEmpty, isInstanceError} = require('../tools/validation/validator');
 const {
   PROFILE_NOT_EXIST,
   RUN_PREVIEW_ERROR,
+  AVATAR_ERROR,
 } = require('../constants/http-send-response');
 const CustomError = require('../tools/customError');
 const {calcPace, calculatedTotals} = require('../tools/totalsActivities');
 const {
   uploadPreview,
+  clearDirectory,
+  isEmptyDirectory,
   removeImage,
   removeFolder,
   createFolder,
@@ -48,7 +51,7 @@ Service.prototype.checkUserBookedRun = function(fields) {
     );
   }
 };
-Service.prototype.createProfileFields = function({fields, user}) {
+Service.prototype.createProfileFields = async function({fields, user, file}) {
   const obj = {};
   obj.user = {
     id: user.id,
@@ -68,6 +71,20 @@ Service.prototype.createProfileFields = function({fields, user}) {
   if (fields.facebook) obj.social.facebook = fields.facebook;
   if (fields.linkedin) obj.social.linkedin = fields.linkedin;
   if (fields.instagram) obj.social.instagram = fields.instagram;
+
+  if (!isEmpty(file)) {
+    const opts = {folder_name: user.id, type: 'AVATAR'};
+    !(await isEmptyDirectory(opts)) && (await clearDirectory(opts));
+    const avatar = await uploadPreview({
+      file,
+      ...opts,
+    });
+    if (isInstanceError(avatar)) {
+      throw new CustomError(err.name, 'cannot create profile fileds(avatar)', {
+        avatar: AVATAR_ERROR,
+      });
+    } else obj.avatar = avatar;
+  }
   return obj;
 };
 Service.prototype.createBookedRunFields = function({fields}) {
@@ -91,7 +108,11 @@ Service.prototype.createRunFields = async function({fields, file, id}) {
   obj.feedback = '';
 
   if (!isEmpty(file)) {
-    const runPreview = await uploadPreview(file, id);
+    const runPreview = await uploadPreview({
+      file,
+      folder_name: id,
+      type: 'PREVIEW',
+    });
     if (isInstanceError(runPreview)) {
       throw new CustomError(err.name, 'cannot create run fileds(preview)', {
         run_preview: RUN_PREVIEW_ERROR,
@@ -104,7 +125,10 @@ Service.prototype.createProfile = async function(data) {
   const profile = await this.model.updateProfile(data);
   if (isEmpty(profile)) {
     await this.model.createProfile(data);
-    const res = await createFolder(data.user.id);
+    const res = await createFolder({
+      folder_name: data.user.id,
+      type: 'PREVIEW',
+    });
 
     if (isInstanceError(res) || !res.success) {
       throw new CustomError(
@@ -218,11 +242,22 @@ Service.prototype.deleteBookedRun = async function({user_id, run_id}) {
   return updatedProfile;
 };
 Service.prototype.deleteAccount = async function(user_id) {
-  await this.model.deleteProfile(user_id);
-  await userModel.deleteAccount(user_id);
-  const res = await removeFolder(user_id);
-
-  if (isInstanceError(res) || !isEmpty(res.error) || !res.success) {
+  const pDeleteProfile = this.model.deleteProfile(user_id);
+  const pDeleteAccount = userModel.deleteAccount(user_id);
+  Promise.all([pDeleteAccount, pDeleteProfile]);
+  const res_previews = await removeFolder({
+    folder_name: user_id,
+    type: 'PREVIEW',
+  });
+  const res_avatar = await removeFolder({folder_name: user_id, type: 'AVATAR'});
+  if (!res_previews.success) {
+    throw new CustomError(
+      err.name,
+      `cannot delete cloudinary folder for user_id: ${user_id}`,
+      {},
+    );
+  }
+  if (!res_avatar.success) {
     throw new CustomError(
       err.name,
       `cannot delete cloudinary folder for user_id: ${user_id}`,
