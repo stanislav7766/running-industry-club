@@ -1,14 +1,6 @@
-const {
-  validateProfile,
-  validateRun,
-  isPreviewRunExist,
-} = require('../tools/validation/profile');
+const {validateProfile, validateRun, isPreviewRunExist} = require('../tools/validation/profile');
 const {isEmpty, isInstanceError} = require('../tools/validation/validator');
-const {
-  PROFILE_NOT_EXIST,
-  RUN_PREVIEW_ERROR,
-  AVATAR_ERROR,
-} = require('../constants/http-send-response');
+const {PROFILE_NOT_EXIST, RUN_PREVIEW_ERROR, AVATAR_ERROR} = require('../constants/http-send-response');
 const CustomError = require('../tools/customError');
 const {calcPace, calculatedTotals} = require('../tools/totalsActivities');
 const {
@@ -22,36 +14,28 @@ const {
 //temp solution
 const {userModel} = require('../models/');
 
-function Service(model) {
-  this.model = model;
-  this.findProfileById = this.findProfileById.bind(this);
-}
-Service.prototype.checkUserProfile = function(fields) {
+const findProfileById = async (id, model) => {
+  const profile = await model.findProfileById(id);
+  if (isEmpty(profile))
+    throw new CustomError('findProfileById', 'Profile Not Exist For This User', {noprofile: PROFILE_NOT_EXIST});
+
+  return profile;
+};
+
+const checkUserProfile = fields => {
   const {errors, isValid} = validateProfile(fields);
-  if (!isValid) {
-    throw new CustomError(
-      'checkUserProfile',
-      'Not Valid Profile Input',
-      errors,
-    );
-  }
+  if (!isValid) throw new CustomError('checkUserProfile', 'Not Valid Profile Input', errors);
 };
-Service.prototype.checkUserRun = function(fields) {
+const checkUserRun = fields => {
   const {errors, isValid} = validateRun(fields);
-  if (!isValid)
-    throw new CustomError('checkUserRun', 'Not Valid Run Input', errors);
+  if (!isValid) throw new CustomError('checkUserRun', 'Not Valid Run Input', errors);
 };
-Service.prototype.checkUserBookedRun = function(fields) {
+const checkUserBookedRun = fields => {
   const {errors, isValid} = validateRun(fields);
-  if (!isValid) {
-    throw new CustomError(
-      'checkUserBookedRun',
-      'Not Valid Booked Run Input',
-      errors,
-    );
-  }
+  if (!isValid) throw new CustomError('checkUserBookedRun', 'Not Valid Booked Run Input', errors);
 };
-Service.prototype.createProfileFields = async function({fields, user, file}) {
+const createProfileFields = async data => {
+  const {fields, user, file} = data;
   const obj = {};
   obj.user = {
     id: user.id,
@@ -87,7 +71,7 @@ Service.prototype.createProfileFields = async function({fields, user, file}) {
   }
   return obj;
 };
-Service.prototype.createBookedRunFields = function({fields}) {
+const createBookedRunFields = fields => {
   const obj = {};
 
   if (fields.locationRun) obj.locationRun = fields.locationRun;
@@ -97,7 +81,8 @@ Service.prototype.createBookedRunFields = function({fields}) {
   if (fields.nameRun) obj.nameRun = fields.nameRun;
   return obj;
 };
-Service.prototype.createRunFields = async function({fields, file, id}) {
+const createRunFields = async data => {
+  const {fields, file, id} = data;
   const obj = {};
   obj.nameRun = fields.nameRun;
   obj.date = fields.date;
@@ -121,52 +106,44 @@ Service.prototype.createRunFields = async function({fields, file, id}) {
   }
   return obj;
 };
-Service.prototype.createProfile = async function(data) {
-  const profile = await this.model.updateProfile(data);
+
+const createProfile = async (data, model) => {
+  const profile = await model.updateProfile(data);
   if (isEmpty(profile)) {
-    await this.model.createProfile(data);
+    await model.createProfile(data);
     const res = await createFolder({
       folder_name: data.user.id,
       type: 'PREVIEW',
     });
 
-    if (isInstanceError(res) || !res.success) {
-      throw new CustomError(
-        err.name,
-        `cannot create folder in cloudinary for user ${data.user.id}`,
-        {},
-      );
-    }
+    if (isInstanceError(res) || !res.success)
+      throw new CustomError(err.name, `cannot create folder in cloudinary for user ${data.user.id}`, {});
   }
   return profile;
 };
 
-Service.prototype.paidBookedRun = async function(user_id, run_id) {
-  const profile = await this.findProfileById(user_id);
+const paidBookedRun = async ({user_id, run_id}, model) => {
+  const profile = await findProfileById(user_id, model);
   const {bookedRuns} = profile;
   const updateIndex = bookedRuns.map(run => run.id).indexOf(run_id);
   bookedRuns[updateIndex].status = 'paid';
-  const updatedProfile = await this.model.updateProfile(profile);
+  const updatedProfile = await model.updateProfile(profile);
 
   if (isEmpty(updatedProfile)) {
-    throw new CustomError(
-      'paidBookedRun',
-      'Profile Not Updated For This User',
-      {
-        noprofile: 'Хм , обновить не вышло',
-      },
-    );
+    throw new CustomError('paidBookedRun', 'Profile Not Updated For This User', {
+      noprofile: 'Хм , обновить не вышло',
+    });
   }
   return updatedProfile;
 };
 
-Service.prototype.addRun = async function(data, id) {
-  const profile = await this.findProfileById(id);
+const addRun = async ({data, id}, model) => {
+  const profile = await findProfileById(id, model);
   const {runs} = profile;
   runs.push(data);
   profile.totalsRun = calculatedTotals(runs);
 
-  const updatedProfile = await this.model.updateProfile(profile);
+  const updatedProfile = await model.updateProfile(profile);
 
   if (isEmpty(updatedProfile)) {
     throw new CustomError('addRun', 'Profile Not Updated For This User', {
@@ -175,11 +152,11 @@ Service.prototype.addRun = async function(data, id) {
   }
   return updatedProfile;
 };
-Service.prototype.addBookedRun = async function(data, id) {
-  const profile = await this.findProfileById(id);
+const addBookedRun = async ({data, id}, model) => {
+  const profile = await findProfileById(id, model);
   const {bookedRuns} = profile;
   bookedRuns.push(data);
-  const updatedProfile = await this.model.updateProfile(profile);
+  const updatedProfile = await model.updateProfile(profile);
 
   if (isEmpty(updatedProfile)) {
     throw new CustomError('addBookedRun', 'Profile Not Updated For This User', {
@@ -188,20 +165,9 @@ Service.prototype.addBookedRun = async function(data, id) {
   }
   return updatedProfile;
 };
-Service.prototype.findProfileById = async function(id) {
-  const profile = await this.model.findProfileById(id);
-  if (isEmpty(profile)) {
-    throw new CustomError(
-      'findProfileById',
-      'Profile Not Exist For This User',
-      {noprofile: PROFILE_NOT_EXIST},
-    );
-  }
-  return profile;
-};
 
-Service.prototype.deleteRun = async function({user_id, run_id}) {
-  const profile = await this.findProfileById(user_id);
+const deleteRun = async ({user_id, run_id}, model) => {
+  const profile = await findProfileById(user_id, model);
   const {runs} = profile;
   const removeIndex = runs.map(run => run.id).indexOf(run_id);
 
@@ -214,7 +180,7 @@ Service.prototype.deleteRun = async function({user_id, run_id}) {
   runs.splice(removeIndex, 1);
   profile.totalsRun = calculatedTotals(runs);
 
-  const updatedProfile = await this.model.updateProfile(profile);
+  const updatedProfile = await model.updateProfile(profile);
 
   if (isEmpty(updatedProfile)) {
     throw new CustomError('deleteRun', 'Profile Not Updated For This User', {
@@ -223,26 +189,22 @@ Service.prototype.deleteRun = async function({user_id, run_id}) {
   }
   return updatedProfile;
 };
-Service.prototype.deleteBookedRun = async function({user_id, run_id}) {
-  const profile = await this.findProfileById(user_id);
+const deleteBookedRun = async ({user_id, run_id}, model) => {
+  const profile = await findProfileById(user_id, model);
   const {bookedRuns} = profile;
   const removeIndex = bookedRuns.map(run => run.id).indexOf(run_id);
   bookedRuns.splice(removeIndex, 1);
-  const updatedProfile = await this.model.updateProfile(profile);
+  const updatedProfile = await model.updateProfile(profile);
 
   if (isEmpty(updatedProfile)) {
-    throw new CustomError(
-      'deleteBookedRun',
-      'Profile Not Updated For This User',
-      {
-        noprofile: 'Хм , обновить не вышло',
-      },
-    );
+    throw new CustomError('deleteBookedRun', 'Profile Not Updated For This User', {
+      noprofile: 'Хм , обновить не вышло',
+    });
   }
   return updatedProfile;
 };
-Service.prototype.deleteAccount = async function(user_id) {
-  const pDeleteProfile = this.model.deleteProfile(user_id);
+const deleteAccount = async (user_id, model) => {
+  const pDeleteProfile = model.deleteProfile(user_id);
   const pDeleteAccount = userModel.deleteAccount(user_id);
   Promise.all([pDeleteAccount, pDeleteProfile]);
   const res_previews = await removeFolder({
@@ -250,19 +212,25 @@ Service.prototype.deleteAccount = async function(user_id) {
     type: 'PREVIEW',
   });
   const res_avatar = await removeFolder({folder_name: user_id, type: 'AVATAR'});
-  if (!res_previews.success) {
-    throw new CustomError(
-      err.name,
-      `cannot delete cloudinary folder for user_id: ${user_id}`,
-      {},
-    );
-  }
-  if (!res_avatar.success) {
-    throw new CustomError(
-      err.name,
-      `cannot delete cloudinary folder for user_id: ${user_id}`,
-      {},
-    );
-  }
+  if (!res_previews.success)
+    throw new CustomError(err.name, `cannot delete cloudinary folder for user_id: ${user_id}`, {});
+
+  if (!res_avatar.success)
+    throw new CustomError(err.name, `cannot delete cloudinary folder for user_id: ${user_id}`, {});
 };
-module.exports = Service;
+module.exports = model => ({
+  checkUserProfile: fields => checkUserProfile(fields),
+  checkUserRun: fields => checkUserRun(fields),
+  checkUserBookedRun: fields => checkUserBookedRun(fields),
+  createProfileFields: data => createProfileFields(data),
+  createBookedRunFields: data => createBookedRunFields(data),
+  createRunFields: data => createRunFields(data),
+  createProfile: data => createProfile(data, model),
+  paidBookedRun: (user_id, run_id) => paidBookedRun({user_id, run_id}, model),
+  addRun: (data, id) => addRun({data, id}, model),
+  addBookedRun: (data, id) => addBookedRun({data, id}, model),
+  findProfileById: id => findProfileById(id, model),
+  deleteRun: (user_id, run_id) => deleteRun({user_id, run_id}, model),
+  deleteBookedRun: (user_id, run_id) => deleteBookedRun({user_id, run_id}, model),
+  deleteAccount: user_id => deleteAccount(user_id, model),
+});

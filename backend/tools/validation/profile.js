@@ -12,8 +12,7 @@ const validateProfile = fields => {
   };
 };
 
-const isPreviewRunExist = ({runPreview: {url, public_id}}) =>
-  !!(url && public_id);
+const isPreviewRunExist = ({runPreview: {url, public_id}}) => !!(url && public_id);
 
 const validateRun = fields => {
   const errors = {};

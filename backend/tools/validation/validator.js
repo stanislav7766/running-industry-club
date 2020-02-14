@@ -29,18 +29,11 @@ const isLength = (text, {min, max}) => text.length >= min && text.length <= max;
 
 const isNumber = text => !isNaN(text) && /^[-]?\d+$/.test(text);
 
-const isTime = text =>
-  /^[+]?([0-9].[:])?([0-9].[:])?[0-9]+$/.test(text) &&
-  text.split(':').length === 3;
+const isTime = text => /^[+]?([0-9].[:])?([0-9].[:])?[0-9]+$/.test(text) && text.split(':').length === 3;
 const isDate = text =>
-  /^\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})\s*$/.test(
-    text,
-  ) && text.split('.').length === 3;
+  /^\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})\s*$/.test(text) && text.split('.').length === 3;
 
-const isURL = url =>
-  /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/.test(
-    url,
-  );
+const isURL = url => /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/.test(url);
 const isInstanceError = obj => obj instanceof Error;
 
 const validateProp = (prop, value) =>
@@ -59,26 +52,11 @@ const validateProp = (prop, value) =>
     twitter: (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
     facebook: (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
     instagram: (!isEmpty(value) && !isURL(value) && URL_INVALID) || '',
-    password:
-      (isEmpty(value) && FIELD_REQUIRED) ||
-      (!isLength(value, {min: 6, max: 30}) && PASSWORD_LENGTH) ||
-      '',
-    password2:
-      (isEmpty(value) && FIELD_REQUIRED) ||
-      (!isLength(value, {min: 6, max: 30}) && PASSWORD_LENGTH) ||
-      '',
-    distance:
-      ((isEmpty(value) || value === '0') && FIELD_REQUIRED) ||
-      (!Number(value) && DISTANCE_INCORRECT) ||
-      '',
-    date:
-      (isEmpty(value) && FIELD_REQUIRED) ||
-      (!isDate(value) && DATE_INVALID) ||
-      '',
-    time:
-      (isEmpty(value) && FIELD_REQUIRED) ||
-      (!isTime(value) && TIME_INVALID) ||
-      '',
+    password: (isEmpty(value) && FIELD_REQUIRED) || (!isLength(value, {min: 6, max: 30}) && PASSWORD_LENGTH) || '',
+    password2: (isEmpty(value) && FIELD_REQUIRED) || (!isLength(value, {min: 6, max: 30}) && PASSWORD_LENGTH) || '',
+    distance: ((isEmpty(value) || value === '0') && FIELD_REQUIRED) || (!Number(value) && DISTANCE_INCORRECT) || '',
+    date: (isEmpty(value) && FIELD_REQUIRED) || (!isDate(value) && DATE_INVALID) || '',
+    time: (isEmpty(value) && FIELD_REQUIRED) || (!isTime(value) && TIME_INVALID) || '',
   }[prop]);
 
 module.exports = {

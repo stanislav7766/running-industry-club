@@ -1,24 +1,13 @@
-const {Router} = require('express');
 const {jwtAuthenticate, parseImageUpload} = require('../middlewares');
-const router = Router();
 
-module.exports = ({
-  setProfile,
-  setRun,
-  setBookedRun,
-  getCurrentProfile,
-  deleteRun,
-  deleteBookedRun,
-  paidBookedRun,
-  deleteAccount,
-}) => {
-  router.post('/', jwtAuthenticate, parseImageUpload(), setProfile);
-  router.get('/', jwtAuthenticate, getCurrentProfile);
-  router.delete('/runs/:run_id', jwtAuthenticate, deleteRun);
-  router.delete('/', jwtAuthenticate, deleteAccount);
-  router.post('/runs', jwtAuthenticate, parseImageUpload(), setRun);
-  router.post('/run-booking', jwtAuthenticate, setBookedRun);
-  router.delete('/booked-runs/:run_id', jwtAuthenticate, deleteBookedRun);
-  router.post('/booked-runs/:run_id', jwtAuthenticate, paidBookedRun);
+module.exports = ({router, profileController}) => {
+  router.post('/api/profile', jwtAuthenticate, parseImageUpload(), profileController.setProfile);
+  router.get('/api/profile', jwtAuthenticate, profileController.getCurrentProfile);
+  router.delete('/api/profile/runs/:run_id', jwtAuthenticate, profileController.deleteRun);
+  router.delete('/api/profile', jwtAuthenticate, profileController.deleteAccount);
+  router.post('/api/profile/runs', jwtAuthenticate, parseImageUpload(), profileController.setRun);
+  router.post('/api/profile/run-booking', jwtAuthenticate, profileController.setBookedRun);
+  router.delete('/api/profile/booked-runs/:run_id', jwtAuthenticate, profileController.deleteBookedRun);
+  router.post('/api/profile/booked-runs/:run_id', jwtAuthenticate, profileController.paidBookedRun);
   return router;
 };

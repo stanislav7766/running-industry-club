@@ -1,10 +1,6 @@
 const {isEmpty, isEquals, validateProp} = require('./validator');
 
-const {
-  NICKNAME_REGISTERED,
-  EMAIL_REGISTERED,
-  PASSWORDS_NOT_EQUAL,
-} = require('../../constants/http-send-response');
+const {NICKNAME_REGISTERED, EMAIL_REGISTERED, PASSWORDS_NOT_EQUAL} = require('../../constants/http-send-response');
 
 const checkUser = (user, {nickname, email}) => {
   const errors = {};
@@ -32,8 +28,7 @@ const validateRegister = fields => {
     if (res) errors[key] = res;
   }
 
-  if (!isEquals(fields.password, fields.password2))
-    errors.password2 = PASSWORDS_NOT_EQUAL;
+  if (!isEquals(fields.password, fields.password2)) errors.password2 = PASSWORDS_NOT_EQUAL;
 
   return {
     errors,

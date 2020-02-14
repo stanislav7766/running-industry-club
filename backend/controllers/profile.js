@@ -1,36 +1,23 @@
 const {errorHandler, sendBadRequest} = require('../tools/errorHandler');
 const {OK} = require('../constants/http-status-code');
-const {
-  bodyFilter,
-  PROFILE_FIELDS,
-  RUN_FIELDS,
-  BOOKED_RUN_FIELDS,
-} = require('../constants/body');
+const {PROFILE_FIELDS, RUN_FIELDS, BOOKED_RUN_FIELDS} = require('../constants/http-send-response');
+const bodyFilter = require('../constants/body');
 
-function Controller(service) {
-  this.service = service;
-  this.setProfile = this.setProfile.bind(this);
-  this.getCurrentProfile = this.getCurrentProfile.bind(this);
-  this.getCurrentBookedRuns = this.getCurrentBookedRuns.bind(this);
-  this.setRun = this.setRun.bind(this);
-  this.setBookedRun = this.setBookedRun.bind(this);
-  this.deleteRun = this.deleteRun.bind(this);
-  this.deleteBookedRun = this.deleteBookedRun.bind(this);
-  this.paidBookedRun = this.paidBookedRun.bind(this);
-  this.deleteAccount = this.deleteAccount.bind(this);
-}
-Controller.prototype.setProfile = async function(req, res) {
+const setProfile = async (ctx, service) => {
+  const {
+    req: {body, user, file},
+    res,
+  } = ctx;
   try {
-    const {body, user, file} = req;
     const fields = bodyFilter(body, PROFILE_FIELDS);
-    await this.service.checkUserProfile(fields);
-    const profileFields = await this.service.createProfileFields({
+    await service.checkUserProfile(fields);
+    const profileFields = await service.createProfileFields({
       fields,
       user,
       file,
     });
 
-    const result = await this.service.createProfile(profileFields);
+    const result = await service.createProfile(profileFields);
     res
       .status(OK)
       .json(result)
@@ -40,12 +27,15 @@ Controller.prototype.setProfile = async function(req, res) {
   }
 };
 
-Controller.prototype.getCurrentProfile = async function(req, res) {
-  try {
-    const {
+const getCurrentProfile = async (ctx, service) => {
+  const {
+    req: {
       user: {id},
-    } = req;
-    const profile = await this.service.findProfileById(id);
+    },
+    res,
+  } = ctx;
+  try {
+    const profile = await service.findProfileById(id);
     res
       .status(OK)
       .json(profile)
@@ -54,13 +44,15 @@ Controller.prototype.getCurrentProfile = async function(req, res) {
     errorHandler(error, () => sendBadRequest(res, error.errors));
   }
 };
-Controller.prototype.getCurrentBookedRuns = async function(req, res) {
-  try {
-    const {
+const getCurrentBookedRuns = async (ctx, service) => {
+  const {
+    req: {
       user: {id},
-    } = req;
-    const profile = await this.service.findProfileById(id);
-    const {bookedRuns} = profile;
+    },
+    res,
+  } = ctx;
+  try {
+    const {bookedRuns} = await service.findProfileById(id);
     res
       .status(OK)
       .json(bookedRuns)
@@ -69,23 +61,25 @@ Controller.prototype.getCurrentBookedRuns = async function(req, res) {
     errorHandler(error, () => sendBadRequest(res, error.errors));
   }
 };
-
-Controller.prototype.setRun = async function(req, res) {
-  try {
-    const {
+const setRun = async (ctx, service) => {
+  const {
+    req: {
       body,
       user: {id},
       file,
-    } = req;
+    },
+    res,
+  } = ctx;
+  try {
     const fields = bodyFilter(body, RUN_FIELDS);
-    await this.service.checkUserRun(fields);
-    const runFields = await this.service.createRunFields({
+    await service.checkUserRun(fields);
+    const runFields = await service.createRunFields({
       fields,
       file,
       id,
     });
 
-    const updatedProfile = await this.service.addRun(runFields, id);
+    const updatedProfile = await service.addRun(runFields, id);
     res
       .status(OK)
       .json(updatedProfile)
@@ -95,17 +89,16 @@ Controller.prototype.setRun = async function(req, res) {
   }
 };
 
-Controller.prototype.deleteRun = async function(req, res) {
-  try {
-    const {
+const deleteRun = async (ctx, service) => {
+  const {
+    req: {
       user: {id},
       params: {run_id},
-    } = req;
-
-    const updatedProfile = await this.service.deleteRun({
-      user_id: id,
-      run_id,
-    });
+    },
+    res,
+  } = ctx;
+  try {
+    const updatedProfile = await service.deleteRun(id, run_id);
     res
       .status(OK)
       .json(updatedProfile)
@@ -114,17 +107,17 @@ Controller.prototype.deleteRun = async function(req, res) {
     errorHandler(error, () => sendBadRequest(res, error.errors));
   }
 };
-Controller.prototype.deleteBookedRun = async function(req, res) {
-  try {
-    const {
+
+const deleteBookedRun = async (ctx, service) => {
+  const {
+    req: {
       user: {id},
       params: {run_id},
-    } = req;
-
-    const updatedProfile = await this.service.deleteBookedRun({
-      user_id: id,
-      run_id,
-    });
+    },
+    res,
+  } = ctx;
+  try {
+    const updatedProfile = await service.deleteBookedRun(id, run_id);
     res
       .status(OK)
       .json(updatedProfile)
@@ -133,20 +126,21 @@ Controller.prototype.deleteBookedRun = async function(req, res) {
     errorHandler(error, () => sendBadRequest(res, error.errors));
   }
 };
-//disscuss logic
-Controller.prototype.setBookedRun = async function(req, res) {
-  try {
-    const {
+
+const setBookedRun = async (ctx, service) => {
+  const {
+    req: {
       body,
       user: {id},
-    } = req;
+    },
+    res,
+  } = ctx;
+  try {
     const fields = bodyFilter(body, BOOKED_RUN_FIELDS);
-    await this.service.checkUserBookedRun(fields);
-    const bookedRunFields = await this.service.createBookedRunFields({
-      fields,
-    });
+    await service.checkUserBookedRun(fields);
+    const bookedRunFields = await service.createBookedRunFields(fields);
 
-    const updatedProfile = await this.service.addBookedRun(bookedRunFields, id);
+    const updatedProfile = await service.addBookedRun(bookedRunFields, id);
     res
       .status(OK)
       .json(updatedProfile)
@@ -156,13 +150,16 @@ Controller.prototype.setBookedRun = async function(req, res) {
   }
 };
 
-Controller.prototype.paidBookedRun = async function(req, res) {
-  try {
-    const {
+const paidBookedRun = async (ctx, service) => {
+  const {
+    req: {
       user: {id},
       params: {run_id},
-    } = req;
-    const updatedProfile = await this.service.paidBookedRun(id, run_id);
+    },
+    res,
+  } = ctx;
+  try {
+    const updatedProfile = await service.paidBookedRun(id, run_id);
     res
       .status(OK)
       .json(updatedProfile)
@@ -172,12 +169,15 @@ Controller.prototype.paidBookedRun = async function(req, res) {
   }
 };
 
-Controller.prototype.deleteAccount = async function(req, res) {
-  try {
-    const {
+const deleteAccount = async (ctx, service) => {
+  const {
+    req: {
       user: {id},
-    } = req;
-    await this.service.deleteAccount(id);
+    },
+    res,
+  } = ctx;
+  try {
+    await service.deleteAccount(id);
     res
       .status(OK)
       .json({success: true})
@@ -186,4 +186,15 @@ Controller.prototype.deleteAccount = async function(req, res) {
     errorHandler(error, () => sendBadRequest(res, error.errors));
   }
 };
-module.exports = Controller;
+
+module.exports = service => ({
+  setProfile: (req, res) => setProfile({req, res}, service),
+  getCurrentProfile: (req, res) => getCurrentProfile({req, res}, service),
+  getCurrentBookedRuns: (req, res) => getCurrentBookedRuns({req, res}, service),
+  setRun: (req, res) => setRun({req, res}, service),
+  deleteRun: (req, res) => deleteRun({req, res}, service),
+  deleteBookedRun: (req, res) => deleteBookedRun({req, res}, service),
+  setBookedRun: (req, res) => setBookedRun({req, res}, service),
+  paidBookedRun: (req, res) => paidBookedRun({req, res}, service),
+  deleteAccount: (req, res) => deleteAccount({req, res}, service),
+});

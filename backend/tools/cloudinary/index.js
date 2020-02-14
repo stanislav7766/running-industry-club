@@ -1,10 +1,6 @@
 const cloudinary = require('cloudinary').v2;
 const fetch = require('node-fetch');
-const {
-  cloudinaryConfig,
-  cloudinaryFolders,
-  cloudinaryOptions,
-} = require('../../constants/configs');
+const {cloudinaryConfig, cloudinaryFolders, cloudinaryOptions} = require('../../constants/configs');
 
 cloudinary.config(cloudinaryConfig);
 
@@ -25,24 +21,19 @@ const uploadPreview = ({file, folder_name, type}) =>
 const uploadPreviewHelper = ({file, folder_name, type}) =>
   new Promise((resolve, reject) =>
     cloudinary.uploader
-      .upload_stream(cloudinaryOptions({folder_name, type}), (err, res) =>
-        err ? reject(err) : resolve(res),
-      )
+      .upload_stream(cloudinaryOptions({folder_name, type}), (err, res) => (err ? reject(err) : resolve(res)))
       .end(file.buffer),
   );
 
 const clearDirectory = async ({folder_name, type}) =>
   await new Promise((resolve, reject) => {
-    cloudinary.api.delete_resources_by_prefix(
-      `${cloudinaryFolders[type]}/${folder_name}`,
-      error => {
-        if (error) {
-          error.name = clearDirectory.name;
-          reject(error);
-        }
-        resolve({success: true});
-      },
-    );
+    cloudinary.api.delete_resources_by_prefix(`${cloudinaryFolders[type]}/${folder_name}`, error => {
+      if (error) {
+        error.name = clearDirectory.name;
+        reject(error);
+      }
+      resolve({success: true});
+    });
   });
 
 const isEmptyDirectory = async ({folder_name, type}) =>

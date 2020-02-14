@@ -1,9 +1,6 @@
 const logger = require('../logger');
 const {isEmpty} = require('../validation/validator');
-const {
-  BAD_REQUEST,
-  INTERNAL_SERVER_ERROR,
-} = require('../../constants/http-status-code');
+const {BAD_REQUEST, INTERNAL_SERVER_ERROR} = require('../../constants/http-status-code');
 
 const sendBadRequest = (response, errors) =>
   response &&

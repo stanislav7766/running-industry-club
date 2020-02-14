@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('./tools/logger/');
 const {errorHandler, sendBadRequest} = require('./tools/errorHandler');
-const {userRouter, profileRouter} = require('./routing');
+const routes = require('./routing');
 const {jwtStrategy, initializePassport} = require('./middlewares');
 
 function Server() {
@@ -13,8 +13,7 @@ Server.prototype.applyMiddlewares = function() {
   this.app.use(bodyParser.urlencoded({extended: false}));
   this.app.use(bodyParser.json());
   this.app.use(initializePassport);
-  this.app.use('/api/users', userRouter);
-  this.app.use('/api/profile', profileRouter);
+  this.app.use(routes);
   jwtStrategy();
 };
 

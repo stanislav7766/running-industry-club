@@ -1,22 +1,18 @@
 const {errorHandler, sendBadRequest} = require('../tools/errorHandler');
 const {OK} = require('../constants/http-status-code');
-const {
-  bodyFilter,
-  REGISTER_FIELDS,
-  LOGIN_FIELDS,
-} = require('../constants/body');
+const {REGISTER_FIELDS, LOGIN_FIELDS} = require('../constants/http-send-response');
+const bodyFilter = require('../constants/body');
 
-function Controller(service) {
-  this.service = service;
-  this.loginUser = this.loginUser.bind(this);
-  this.registerUser = this.registerUser.bind(this);
-}
-Controller.prototype.loginUser = async function(req, res) {
+const loginUser = async (ctx, service) => {
+  const {
+    req: {body},
+    res,
+  } = ctx;
   try {
-    const fields = bodyFilter(req.body, LOGIN_FIELDS);
-    const user = await this.service.checkUserLogin(fields);
-    await this.service.comparePasswords(fields.password, user.password);
-    const token = await this.service.setToken(user);
+    const fields = bodyFilter(body, LOGIN_FIELDS);
+    const user = await service.checkUserLogin(fields);
+    await service.comparePasswords(fields.password, user.password);
+    const token = await service.setToken(user);
     res
       .status(OK)
       .json(token)
@@ -25,14 +21,22 @@ Controller.prototype.loginUser = async function(req, res) {
     errorHandler(error, () => sendBadRequest(res, error.errors));
   }
 };
-Controller.prototype.registerUser = async function(req, res) {
+const registerUser = async (ctx, service) => {
+  const {
+    req: {body},
+    res,
+  } = ctx;
   try {
-    const fields = bodyFilter(req.body, REGISTER_FIELDS);
-    await this.service.checkUserRegister(fields);
-    await this.service.createUser(fields);
+    const fields = bodyFilter(body, REGISTER_FIELDS);
+    await service.checkUserRegister(fields);
+    await service.createUser(fields);
     res.status(OK).end();
   } catch (error) {
     errorHandler(error, () => sendBadRequest(res, error.errors));
   }
 };
-module.exports = Controller;
+
+module.exports = service => ({
+  loginUser: (req, res) => loginUser({req, res}, service),
+  registerUser: (req, res) => registerUser({req, res}, service),
+});

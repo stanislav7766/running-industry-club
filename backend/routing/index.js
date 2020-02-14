@@ -1,12 +1,9 @@
+const {Router} = require('express');
+const router = Router();
+
 const {userController, profileController} = require('../controllers');
 
-const userRouting = require('./user');
-const profileRouting = require('./profile');
+require('./user')({router, userController});
+require('./profile')({router, profileController});
 
-const userRouter = userRouting(userController);
-const profileRouter = profileRouting(profileController);
-
-module.exports = {
-  userRouter,
-  profileRouter,
-};
+module.exports = router;

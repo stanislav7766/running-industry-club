@@ -52,6 +52,5 @@ const jwtSign = ({id, nickname, email}) =>
 module.exports = {
   hashPassword: async password => await hashedPass(password),
   comparePasswords: async (password, hash) => await comparePass(password, hash),
-  setToken: async ({id, nickname, email}) =>
-    await jwtSign({id, nickname, email}),
+  setToken: async ({id, nickname, email}) => await jwtSign({id, nickname, email}),
 };
