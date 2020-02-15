@@ -59,6 +59,12 @@ const validateProp = (prop, value) =>
     time: (isEmpty(value) && FIELD_REQUIRED) || (!isTime(value) && TIME_INVALID) || '',
   }[prop]);
 
+const validateFields = fields =>
+  Object.keys(fields).reduce((accum, prop) => {
+    const res = validateProp(prop, fields[prop]);
+    return res ? {...accum, [prop]: res} : accum;
+  }, {});
+
 module.exports = {
   isEmail,
   isEmpty,
@@ -69,5 +75,5 @@ module.exports = {
   isURL,
   isInstanceError,
   isDate,
-  validateProp,
+  validateFields,
 };

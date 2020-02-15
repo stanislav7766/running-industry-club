@@ -16,8 +16,4 @@ const cloudinaryOptions = ({folder_name, type}) => ({
   // async: true //if async - true, image will be loaded but status - pending and cant get url, only public_id
 });
 
-module.exports = {
-  cloudinaryConfig,
-  cloudinaryFolders,
-  cloudinaryOptions,
-};
+module.exports = {cloudinaryConfig, cloudinaryFolders, cloudinaryOptions};

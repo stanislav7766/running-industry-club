@@ -1,7 +1,5 @@
 const multerConfig = {
-  limits: {
-    fileSize: 2048 * 2048,
-  },
+  limits: {fileSize: 2048 * 2048},
 };
 
 module.exports = {multerConfig};

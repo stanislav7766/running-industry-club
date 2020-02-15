@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const hashedPass = password =>
+const hashPassword = password =>
   new Promise((resolve, reject) =>
     bcrypt
       .genSalt(Number(process.env.SALT))
@@ -10,27 +10,27 @@ const hashedPass = password =>
           .hash(password, salt)
           .then(hash => resolve(hash))
           .catch(err => {
-            err.name = hashedPass.name;
+            err.name = hashPassword.name;
             reject(err);
           }),
       )
       .catch(err => {
-        err.name = hashedPass.name;
+        err.name = hashPassword.name;
         reject(err);
       }),
   );
 
-const comparePass = (password, hash) =>
+const comparePasswords = (password, hash) =>
   new Promise((resolve, reject) =>
     bcrypt
       .compare(password, hash)
       .then(isMatched => resolve(isMatched))
       .catch(err => {
-        err.name = comparePass.name;
+        err.name = comparePasswords.name;
         reject(err);
       }),
   );
-const jwtSign = ({id, nickname, email}) =>
+const setToken = ({id, nickname, email}) =>
   new Promise((resolve, reject) => {
     jwt.sign(
       {id, nickname, email},
@@ -38,19 +38,16 @@ const jwtSign = ({id, nickname, email}) =>
       {expiresIn: Number(process.env.EXPIRES_TOKEN)},
       (err, token) => {
         if (err) {
-          err.name = jwtSign.name;
+          err.name = setToken.name;
           reject(err);
         }
-        resolve({
-          success: true,
-          token: `Bearer ${token}`,
-        });
+        resolve({success: true, token: `Bearer ${token}`});
       },
     );
   });
 
 module.exports = {
-  hashPassword: async password => await hashedPass(password),
-  comparePasswords: async (password, hash) => await comparePass(password, hash),
-  setToken: async ({id, nickname, email}) => await jwtSign({id, nickname, email}),
+  hashPassword: async password => await hashPassword(password),
+  comparePasswords: async (password, hash) => await comparePasswords(password, hash),
+  setToken: async ({id, nickname, email}) => await setToken({id, nickname, email}),
 };

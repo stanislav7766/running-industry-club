@@ -1,200 +1,161 @@
-const {errorHandler, sendBadRequest} = require('../tools/errorHandler');
+const errorHandler = require('../tools/errorHandler');
 const {OK} = require('../constants/http-status-code');
 const {PROFILE_FIELDS, RUN_FIELDS, BOOKED_RUN_FIELDS} = require('../constants/http-send-response');
 const bodyFilter = require('../constants/body');
 
 const setProfile = async (ctx, service) => {
-  const {
-    req: {body, user, file},
-    res,
-  } = ctx;
+  const {body, user, file, onResponse, onBadResponse} = ctx;
   try {
     const fields = bodyFilter(body, PROFILE_FIELDS);
     await service.checkUserProfile(fields);
-    const profileFields = await service.createProfileFields({
-      fields,
-      user,
-      file,
-    });
+    const profileFields = await service.createProfileFields({fields, user, file});
 
     const result = await service.createProfile(profileFields);
-    res
-      .status(OK)
-      .json(result)
-      .end();
+    onResponse(OK, result);
   } catch (error) {
-    errorHandler(error, () => sendBadRequest(res, error.errors));
+    const {errors} = error;
+    errorHandler(error, () => onBadResponse(errors));
   }
 };
 
 const getCurrentProfile = async (ctx, service) => {
   const {
-    req: {
-      user: {id},
-    },
-    res,
+    user: {id},
+    onResponse,
+    onBadResponse,
   } = ctx;
   try {
     const profile = await service.findProfileById(id);
-    res
-      .status(OK)
-      .json(profile)
-      .end();
+    onResponse(OK, profile);
   } catch (error) {
-    errorHandler(error, () => sendBadRequest(res, error.errors));
+    const {errors} = error;
+    errorHandler(error, () => onBadResponse(errors));
   }
 };
 const getCurrentBookedRuns = async (ctx, service) => {
   const {
-    req: {
-      user: {id},
-    },
-    res,
+    user: {id},
+    onResponse,
+    onBadResponse,
   } = ctx;
   try {
     const {bookedRuns} = await service.findProfileById(id);
-    res
-      .status(OK)
-      .json(bookedRuns)
-      .end();
+    onResponse(OK, bookedRuns);
   } catch (error) {
-    errorHandler(error, () => sendBadRequest(res, error.errors));
+    const {errors} = error;
+    errorHandler(error, () => onBadResponse(errors));
   }
 };
 const setRun = async (ctx, service) => {
   const {
-    req: {
-      body,
-      user: {id},
-      file,
-    },
-    res,
+    body,
+    user: {id},
+    file,
+    onResponse,
+    onBadResponse,
   } = ctx;
   try {
     const fields = bodyFilter(body, RUN_FIELDS);
     await service.checkUserRun(fields);
-    const runFields = await service.createRunFields({
-      fields,
-      file,
-      id,
-    });
-
+    const runFields = await service.createRunFields({fields, file, id});
     const updatedProfile = await service.addRun(runFields, id);
-    res
-      .status(OK)
-      .json(updatedProfile)
-      .end();
+    onResponse(OK, updatedProfile);
   } catch (error) {
-    errorHandler(error, () => sendBadRequest(res, error.errors));
+    const {errors} = error;
+    errorHandler(error, () => onBadResponse(errors));
   }
 };
 
 const deleteRun = async (ctx, service) => {
   const {
-    req: {
-      user: {id},
-      params: {run_id},
-    },
-    res,
+    user: {id},
+    params: {run_id},
+    onResponse,
+    onBadResponse,
   } = ctx;
   try {
     const updatedProfile = await service.deleteRun(id, run_id);
-    res
-      .status(OK)
-      .json(updatedProfile)
-      .end();
+    onResponse(OK, updatedProfile);
   } catch (error) {
-    errorHandler(error, () => sendBadRequest(res, error.errors));
+    const {errors} = error;
+    errorHandler(error, () => onBadResponse(errors));
   }
 };
 
 const deleteBookedRun = async (ctx, service) => {
   const {
-    req: {
-      user: {id},
-      params: {run_id},
-    },
-    res,
+    user: {id},
+    params: {run_id},
+    onResponse,
+    onBadResponse,
   } = ctx;
   try {
     const updatedProfile = await service.deleteBookedRun(id, run_id);
-    res
-      .status(OK)
-      .json(updatedProfile)
-      .end();
+    onResponse(OK < updatedProfile);
   } catch (error) {
-    errorHandler(error, () => sendBadRequest(res, error.errors));
+    const {errors} = error;
+    errorHandler(error, () => onBadResponse(errors));
   }
 };
 
 const setBookedRun = async (ctx, service) => {
   const {
-    req: {
-      body,
-      user: {id},
-    },
-    res,
+    body,
+    user: {id},
+    onResponse,
+    onBadResponse,
   } = ctx;
   try {
     const fields = bodyFilter(body, BOOKED_RUN_FIELDS);
     await service.checkUserBookedRun(fields);
     const bookedRunFields = await service.createBookedRunFields(fields);
-
     const updatedProfile = await service.addBookedRun(bookedRunFields, id);
-    res
-      .status(OK)
-      .json(updatedProfile)
-      .end();
+    onResponse(OK, updatedProfile);
   } catch (error) {
-    errorHandler(error, () => sendBadRequest(res, error.errors));
+    const {errors} = error;
+    errorHandler(error, () => onBadResponse(errors));
   }
 };
 
 const paidBookedRun = async (ctx, service) => {
   const {
-    req: {
-      user: {id},
-      params: {run_id},
-    },
-    res,
+    user: {id},
+    params: {run_id},
+    onResponse,
+    onBadResponse,
   } = ctx;
   try {
     const updatedProfile = await service.paidBookedRun(id, run_id);
-    res
-      .status(OK)
-      .json(updatedProfile)
-      .end();
+    onResponse(OK, updatedProfile);
   } catch (error) {
-    errorHandler(error, () => sendBadRequest(res, error.errors));
+    const {errors} = error;
+    errorHandler(error, () => onBadResponse(errors));
   }
 };
 
 const deleteAccount = async (ctx, service) => {
   const {
-    req: {
-      user: {id},
-    },
-    res,
+    user: {id},
+    onResponse,
+    onBadResponse,
   } = ctx;
   try {
     await service.deleteAccount(id);
-    res
-      .status(OK)
-      .json({success: true})
-      .end();
+    onResponse(OK, {success: true});
   } catch (error) {
-    errorHandler(error, () => sendBadRequest(res, error.errors));
+    const {errors} = error;
+    errorHandler(error, () => onBadResponse(errors));
   }
 };
 
 module.exports = service => ({
-  setProfile: (req, res) => setProfile({req, res}, service),
-  getCurrentProfile: (req, res) => getCurrentProfile({req, res}, service),
-  getCurrentBookedRuns: (req, res) => getCurrentBookedRuns({req, res}, service),
-  setRun: (req, res) => setRun({req, res}, service),
-  deleteRun: (req, res) => deleteRun({req, res}, service),
-  deleteBookedRun: (req, res) => deleteBookedRun({req, res}, service),
-  setBookedRun: (req, res) => setBookedRun({req, res}, service),
-  paidBookedRun: (req, res) => paidBookedRun({req, res}, service),
-  deleteAccount: (req, res) => deleteAccount({req, res}, service),
+  setProfile: ctx => setProfile(ctx, service),
+  getCurrentProfile: ctx => getCurrentProfile(ctx, service),
+  getCurrentBookedRuns: ctx => getCurrentBookedRuns(ctx, service),
+  setRun: ctx => setRun(ctx, service),
+  deleteRun: ctx => deleteRun(ctx, service),
+  deleteBookedRun: ctx => deleteBookedRun(ctx, service),
+  setBookedRun: ctx => setBookedRun(ctx, service),
+  paidBookedRun: ctx => paidBookedRun(ctx, service),
+  deleteAccount: ctx => deleteAccount(ctx, service),
 });

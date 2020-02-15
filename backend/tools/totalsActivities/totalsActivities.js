@@ -15,6 +15,7 @@ const calcPace = (dist, time) => {
 
 const calculatedTotals = runs => {
   const calcTotalKM = (arr, prop) => arr.reduce((acc, obj) => parseFloat(acc) + parseFloat(obj[prop]), 0).toFixed(2);
+
   const calcTotalTime = (arr, prop) => {
     const time = arr.reduce((acc, obj) => acc.add(moment.duration(obj[prop])), moment.duration());
     return [Math.floor(time.asHours()), time.minutes(), time.seconds()].join(':');
@@ -22,6 +23,7 @@ const calculatedTotals = runs => {
 
   const calcTotalRun = (arr, prop1, prop2) =>
     arr.reduce((acc, obj) => (isEmpty(obj[prop1]) && isEmpty(obj[prop2]) ? (acc += 0) : (acc += 1)), 0);
+
   const calcAvgDistance = (totalKM, totalRun) => (totalKM / totalRun).toFixed(2);
 
   const totalsRun = {};

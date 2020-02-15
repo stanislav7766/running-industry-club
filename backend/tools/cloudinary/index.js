@@ -9,10 +9,7 @@ const getFolderFetchLink = ({folder_name, type}) =>
 
 const uploadPreview = ({file, folder_name, type}) =>
   uploadPreviewHelper({file, folder_name, type})
-    .then(result => ({
-      url: result.url,
-      public_id: result.public_id,
-    }))
+    .then(result => ({url: result.url, public_id: result.public_id}))
     .catch(err => {
       err.name = uploadPreview.name;
       return err;
@@ -38,29 +35,21 @@ const clearDirectory = async ({folder_name, type}) =>
 
 const isEmptyDirectory = async ({folder_name, type}) =>
   await new Promise((resolve, reject) => {
-    cloudinary.api.resources(
-      {
-        type: 'upload',
-        prefix: `${cloudinaryFolders[type]}/${folder_name}`,
-      },
-      (error, result) => {
-        if (error) {
-          error.name = clearDirectory.name;
-          reject(error);
-        }
-        const {resources} = result;
-        resolve((Array.isArray(resources) && resources.length) > 0 ? 0 : 1);
-      },
-    );
+    cloudinary.api.resources({type: 'upload', prefix: `${cloudinaryFolders[type]}/${folder_name}`}, (error, result) => {
+      if (error) {
+        error.name = clearDirectory.name;
+        reject(error);
+      }
+      const {resources} = result;
+      resolve((Array.isArray(resources) && resources.length) > 0 ? 0 : 1);
+    });
   });
 
 const removeFolder = async ({folder_name, type}) =>
   await new Promise(async (resolve, reject) => {
     try {
       await clearDirectory({folder_name, type});
-      fetch(getFolderFetchLink({folder_name, type}), {
-        method: 'DELETE',
-      })
+      fetch(getFolderFetchLink({folder_name, type}), {method: 'DELETE'})
         .then(res => res.json())
         .then(res => res && res.deleted && resolve({success: true}))
         .catch(err => {
@@ -73,9 +62,7 @@ const removeFolder = async ({folder_name, type}) =>
   });
 const createFolder = async ({folder_name, type}) =>
   await new Promise((resolve, reject) => {
-    fetch(getFolderFetchLink({folder_name, type}), {
-      method: 'POST',
-    })
+    fetch(getFolderFetchLink({folder_name, type}), {method: 'POST'})
       .then(res => res.json())
       .then(res => res && res.success && resolve({success: true}))
       .catch(err => {

@@ -5,6 +5,4 @@ const mongooseConfig = {
   useCreateIndex: true,
 };
 
-module.exports = {
-  mongooseConfig,
-};
+module.exports = {mongooseConfig};

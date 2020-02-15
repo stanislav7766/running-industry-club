@@ -1,6 +1,6 @@
 const {jwtAuthenticate, parseImageUpload} = require('../middlewares');
 
-module.exports = ({router, profileController}) => {
+module.exports = (router, profileController) => {
   router.post('/api/profile', jwtAuthenticate, parseImageUpload(), profileController.setProfile);
   router.get('/api/profile', jwtAuthenticate, profileController.getCurrentProfile);
   router.delete('/api/profile/runs/:run_id', jwtAuthenticate, profileController.deleteRun);

@@ -14,9 +14,7 @@ winston.addColors({
   debug: 'white',
   silly: 'white',
 });
-const levels = {
-  ...winston.config.syslog.levels,
-};
+const levels = {...winston.config.syslog.levels};
 
 const logger = winston.createLogger({
   levels,

@@ -207,10 +207,7 @@ const deleteAccount = async (user_id, model) => {
   const pDeleteProfile = model.deleteProfile(user_id);
   const pDeleteAccount = userModel.deleteAccount(user_id);
   Promise.all([pDeleteAccount, pDeleteProfile]);
-  const res_previews = await removeFolder({
-    folder_name: user_id,
-    type: 'PREVIEW',
-  });
+  const res_previews = await removeFolder({folder_name: user_id, type: 'PREVIEW'});
   const res_avatar = await removeFolder({folder_name: user_id, type: 'AVATAR'});
   if (!res_previews.success)
     throw new CustomError(err.name, `cannot delete cloudinary folder for user_id: ${user_id}`, {});
